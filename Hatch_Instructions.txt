@@ -1,0 +1,30 @@
+Finally getting around to DNA.  Here are some initial thoughts:
+Files that are not needed:
+cc_aux_func.f90
+cc_gaussquadrature.f90
+cc_flr.f90
+cc_hk.f90
+ee_Gyro_LES.f90
+ee_eigen_iterative
+cc_field_solver.f90
+ee_slepc_aux.f90
+
+Might have some useful stuff:
+ee_diagnostics.f90--lots of stuff that doesn't direclty apply, but you can adapt for whatever you want to output. could put a routine here to do a Beltrami transform
+ee_performance.f90--has some timing stuff to test performance
+ee_triple_transfers.f90--this is a diagnostic that analyzes nonlinear tranfser functions. May be interesting to adapt eventually, but don't worry about it for now.
+ee_petsc_aux.f90--can keept his if you want the eigenvalue capability for linear calculations or time step constraint.
+
+Files to keep / adapt:
+cc_calc_dt.f90. This calculates and adapts the time step. It will likely be useful eventually. But we can start by just adapting time step manually.
+cc_comm.f90 all the mpi parallelization stuff
+cc_get_rhs_lin.f90. This calculates all the linear terms. This should be easy to adapt.
+cc_get_rhs_nl.f90. This calculates the nonlinearity. Should be quite straightforward to adapt.
+cc_initial_condition.f90. Can use this to inspire initial conditions for new code if you like.
+cc_main.f90. This is the main loop. You can keep this mostly intact.
+cc_par_io.f90. This has everything to read in parameters files. You will probably want to keep this mainly intact and adapt for new inputs.
+cc_par_mod.f90. This has definitions of parameters. Adapt to suit new code.
+cc_time_advance.f90. This has the runge-kutta time stepper. Keep mostly intact.
+
+Main modification that is needed:
+I would recommend getting rid of phi everywhere. The g variables have been for the distribution function in Hermite space. I would recommend hard wiring this to contain the six (correct?) fields needed for the 2 fluid equations (three components of v and three components of B).
