@@ -32,15 +32,30 @@ MODULE linear_rhs
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!                                get_rhs_lin                                !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SUBROUTINE get_rhs_lin(g_in,phi_in,rhs_out,which_term)
+SUBROUTINE get_rhs_lin(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz,rhs_out_bx, rhs_out_by, rhs_out_bz,rhs_out_vx, rhs_out_vy, rhs_out_vz, which_term)
   IMPLICIT NONE
 
- COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
- COMPLEX :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
- COMPLEX, INTENT(in) :: phi_in(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- !COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2)
- COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
- !COMPLEX :: g_wb(0:nkx0-1,0:nky0-1,0:nkz0-1,lbv:ubv)
+! COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
+! COMPLEX :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
+! !COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2)
+! COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
+! !COMPLEX :: g_wb(0:nkx0-1,0:nky0-1,0:nkz0-1,lbv:ubv)
+! INTEGER, INTENT(in) :: which_term
+
+
+ COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
+ COMPLEX, INTENT(in) :: b_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: b_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: b_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: v_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: v_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: v_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_bx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_by(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_bz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_vx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_vy(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_vz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
  INTEGER, INTENT(in) :: which_term
 
 
@@ -58,12 +73,21 @@ SUBROUTINE get_rhs_lin(g_in,phi_in,rhs_out,which_term)
  
 END SUBROUTINE get_rhs_lin
 
-SUBROUTINE get_rhs_lin1_ae(g_in,g_bounds,phi_in,rhs_out,which_term)
+SUBROUTINE get_rhs_lin1_ae(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz, rhs_out_bx, rhs_out_by, rhs_out_bz,rhs_out_vx, rhs_out_vy, rhs_out_vz,g_bounds,which_term)
 
- COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
  COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
- COMPLEX, INTENT(in) :: phi_in(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
+ COMPLEX, INTENT(in) :: b_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: b_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: b_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: v_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: v_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: v_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_bx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_by(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_bz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_vx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_vy(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(out) :: rhs_out_vz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
  INTEGER, INTENT(in) :: which_term
 
  INTEGER :: i,j,k,l,h,ierr
@@ -96,8 +120,10 @@ SUBROUTINE get_rhs_lin1_ae(g_in,g_bounds,phi_in,rhs_out,which_term)
    !The matrix is symmetric with the exception of these two terms
    grad1_flag=0
    grad2_flag=0
-   g0_bcast=g_in(0,0,0,lv1,0,0)
-   CALL MPI_BCAST(g0_bcast,1,MPI_DOUBLE_COMPLEX,0,MPI_COMM_WORLD,ierr) 
+   b0_bcast=b_in(0,0,0)
+   v0_bcast=v_in(0,0,0)
+   CALL MPI_BCAST(b0_bcast,1,MPI_DOUBLE_COMPLEX,0,MPI_COMM_WORLD,ierr) 
+   CALL MPI_BCAST(v0_bcast,1,MPI_DOUBLE_COMPLEX,0,MPI_COMM_WORLD,ierr) 
    !WRITE(*,*) "!!!g0_bcast",g0_bcast
    IF((1.ge.lv1).and.(1.le.lv2)) phi_mod1=g_in(0,0,0,1,0,0)/g0_bcast
    IF((2.ge.lv1).and.(2.le.lv2)) phi_mod2=g_in(0,0,0,2,0,0)/g0_bcast
@@ -109,124 +135,132 @@ SUBROUTINE get_rhs_lin1_ae(g_in,g_bounds,phi_in,rhs_out,which_term)
  DO i=0,nkx0-1
    DO j=0,nky0-1
      DO k=lkz1,lkz2
-       !IF(mype==0.and.verbose) WRITE(*,*) "kxgrid(i),kygrid(j),kzgrid(k)",kxgrid(i),kygrid(j),kzgrid(k)
-       !IF(mype==0.and.verbose) WRITE(*,*) "kxmax_hyp,kymax_hyp,kzmax_hyp",kxmax_hyp,kymax_hyp,kzmax_hyp
-       DO l=lv1,lv2
-        DO h = lh1,lh2
-         IF( (which_term==0.or.which_term==1).and. ( (l.gt.2).or.(.not.em_conserve) )) THEN
-           rhs_out(i,j,k,l,h,0)=-nu*herm_grid(l)*g_in(i,j,k,l,h,0) !Collisions
-         ELSE
-           !IF(verbose) WRITE(*,*) "Before.",mype
-           rhs_out(i,j,k,l,h,0)= cmplx(0.0,0.0)
-           !IF(verbose) WRITE(*,*) "After.",mype
-         END IF
+        rhs_out_bx(i,j,k) = i_complex*kzgrid(k)*v_inx(i,j,k) + i_complex*kygrid(j)*b_inz(i,j,k) -i_complex*kzgrid(k)*b_iny(i,j,k)
+        rhs_out_by(i,j,k) = i_complex*kzgrid(k)*v_iny(i,j,k) + i_complex*kzgrid(k)*b_inx(i,j,k) -i_complex*kxgrid(i)*b_inz(i,j,k)
+        rhs_out_bz(i,j,k) = i_complex*kzgrid(k)*v_inz(i,j,k) + i_complex*kxgrid(i)*b_iny(i,j,k) -i_complex*kygrid(y)*b_inx(i,j,k)
 
-         IF( (which_term==0.or.which_term==2).and. ( (l.gt.2).or.(.not.em_conserve) ) ) &
-            rhs_out(i,j,k,l,h,0)= rhs_out(i,j,k,l,h,0) &
-               -hyp_v*(REAL(herm_grid(l))/REAL(nv0-1))**hypv_order*g_in(i,j,k,l,h,0) !Hyper collisions (Parker)
-         IF( (which_term==0.or.which_term==3).and.  l.ne.0) THEN
-           IF(l==lv1) THEN
-             IF(spatial2d) THEN
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l))*g_bounds(i,j,k,h,1)  !Phase mixing 1
-             ELSE
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l))*g_bounds(i,j,k,h,1)  !Phase mixing 1
-             END IF
-           ELSE
-             IF(spatial2d) THEN
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l))*g_in(i,j,k,l-1,h,0)  !Phase mixing 1
-             ELSE
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l))*g_in(i,j,k,l-1,h,0)  !Phase mixing 1
-             END IF
-           END IF
-         END IF
-         IF( (which_term==0.or.which_term==9).and.  l.ne.nv0-1) THEN
-           IF(l==lv2) THEN
-             IF(spatial2d) THEN
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l+1))*g_bounds(i,j,k,h,2)
-             ELSE
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l+1))*g_bounds(i,j,k,h,2)
-             END IF
-           ELSE
-             IF(spatial2d) THEN
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l+1))*g_in(i,j,k,l+1,h,0)  !Phase mixing 2
-             ELSE
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l+1))*g_in(i,j,k,l+1,h,0)  !Phase mixing 2
-             END IF
-           END IF
-         END IF
-         IF( (which_term==0.or.which_term==9).and.  l.eq.nv0-1 .and. nuno_closure) THEN
-           diss_max= hyp_v*(REAL(nv0)/REAL(nv0-1))**hypv_order + nu*nv0
-           IF(spatial2d) THEN
-             g_closure=-i_complex*kzgrid(j)*sqrt(real(nv0))*g_in(i,j,k,l,h,0)/diss_max
-             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*SQRT(REAL(nv0))*g_closure
-           ELSE
-             g_closure=-i_complex*kzgrid(k)*sqrt(real(nv0))*g_in(i,j,k,l,h,0)/diss_max
-             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*SQRT(REAL(nv0))*g_closure
-           END IF
-         END IF
-         IF( (which_term==0.or.which_term==4).and.  l==0) &
-             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0) &
-              -i_complex*kygrid(j)*omn*pi**(-0.25)*J0a(i,j)*phi_in(i,j,k)*I0a(i,j,h)  !density gradient term
-         IF( (which_term==0.or.which_term==5).and.  l==grad1_flag) THEN
-             IF(spatial2d) THEN
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -i_complex*kzgrid(j)*pi**(-0.25)*J0a(i,j)*phi_in(i,j,k)*phi_mod1*I0a(i,j,h)      !delta_n,1 term
-             ELSE
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -i_complex*kzgrid(k)*pi**(-0.25)*J0a(i,j)*phi_in(i,j,k)*phi_mod1*I0a(i,j,h)      !delta_n,1 term
-             END IF
-         END IF
-         IF( (which_term==0.or.which_term==6).and.  l==grad2_flag) &
-             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -2.0**(-0.5)*pi**(-0.25)*omt*i_complex*kygrid(j)*J0a(i,j)*phi_in(i,j,k)*phi_mod2*I0a(i,j,h) !grad T drive
-         !Extra term for FLR effects and Hankel modification 
-         IF( (which_term==0.or.which_term==7).and. ( l==0.and.((flr_on.and.flr_extra).or.(.not.mu_integrated))  )) &
-             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0) &
-                  +i_complex*kygrid(j)*omt*pi**(-0.25)*( 0.5*(kxgrid(i)**2+kygrid(j)**2) )*J0a(i,j)*phi_in(i,j,k)*I1a(i,j,h)  !Extra flr term
+        rhs_out_vx(i,j,k) = i_complex*kzgrid(k)*b_inx(i,j,k)
+        rhs_out_vy(i,j,k) = i_complex*kzgrid(k)*b_iny(i,j,k)
+        rhs_out_vz(i,j,k) = i_complex*kzgrid(k)*b_inz(i,j,k)
 
-         IF(which_term==0.or.which_term==10) THEN
-            !!!!!hyp_conv
-            !!!!!hyp_conv
-            IF(k==0.and..not.spatial2d) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -hyp_nu*hyp_conv*g_in(i,j,k,l,h,0)                            !kz=0 crook term
-            IF(num_k_hyp_conv.gt.0) THEN
-              IF((k.le.num_k_hyp_conv.or.k.ge.nkz0-num_k_hyp_conv).and..not.spatial2d.and.k.ne.0) &
-                     rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                    -hyp_nu*hyp_conv*g_in(i,j,k,l,h,0)                            !crook term
-              IF((j.le.num_k_hyp_conv.or.j.ge.nky0-num_k_hyp_conv).and.(j.ne.0).and.hyp_conv_ky) &
-                     rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                    -hyp_nu*hyp_conv*g_in(i,j,k,l,h,0)                            !crook term
-            END IF
-            !!!!!hyp_conv
-            !!!!!hyp_conv
-
-         END IF
-         IF(which_term==0.or.which_term==8) THEN
-            IF(j==0.and.k==0) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -nu*hyp_zonal*g_in(i,j,k,l,h,0)                            !Zonal crook term
-           !IF(k==0.and.l==0) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-            IF(.not.spatial2d) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                 -hyp_z*g_in(i,j,k,l,h,0)*(kzgrid(k)/kzmax0)**hypz_order !hyperviscous z
-            IF(GyroLES.and..not.Gyroherm) THEN 
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&   
-                  -hyp_x_herm*g_in(i,j,k,l,h,0)*(kxgrid(i)/kxmax0)**hypx_order   !hyperviscous x with herm. dep.
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -hyp_y_herm*g_in(i,j,k,l,h,0)*(kygrid(j)/kymax0)**hypy_order   !hyperviscous y with herm. dep.
-            ELSE IF (GyroLES.and.Gyroherm) THEN
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&   
-                  -hyp_x_herm1(l)*g_in(i,j,k,l,h,0)*(kxgrid(i)/kxmax0)**hypx_order   !hyperviscous x with herm. dep.
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -hyp_y_herm1(l)*g_in(i,j,k,l,h,0)*(kygrid(j)/kymax0)**hypy_order   !hyperviscous y with herm. dep.
-            ELSE
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -hyp_x*g_in(i,j,k,l,h,0)*(kxgrid(i)/kxmax0)**hypx_order   !hyperviscous x
-               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
-                  -hyp_y*g_in(i,j,k,l,h,0)*(kygrid(j)/kymax0)**hypy_order   !hyperviscous y
-            END IF 
-
-         END IF
-        END DO
-       END DO
+!       !IF(mype==0.and.verbose) WRITE(*,*) "kxgrid(i),kygrid(j),kzgrid(k)",kxgrid(i),kygrid(j),kzgrid(k)
+!       !IF(mype==0.and.verbose) WRITE(*,*) "kxmax_hyp,kymax_hyp,kzmax_hyp",kxmax_hyp,kymax_hyp,kzmax_hyp
+!       DO l=lv1,lv2
+!        DO h = lh1,lh2
+!         IF( (which_term==0.or.which_term==1).and. ( (l.gt.2).or.(.not.em_conserve) )) THEN
+!           rhs_out(i,j,k,l,h,0)=-nu*herm_grid(l)*g_in(i,j,k,l,h,0) !Collisions
+!         ELSE
+!           !IF(verbose) WRITE(*,*) "Before.",mype
+!           rhs_out(i,j,k,l,h,0)= cmplx(0.0,0.0)
+!           !IF(verbose) WRITE(*,*) "After.",mype
+!         END IF
+!
+!         IF( (which_term==0.or.which_term==2).and. ( (l.gt.2).or.(.not.em_conserve) ) ) &
+!            rhs_out(i,j,k,l,h,0)= rhs_out(i,j,k,l,h,0) &
+!               -hyp_v*(REAL(herm_grid(l))/REAL(nv0-1))**hypv_order*g_in(i,j,k,l,h,0) !Hyper collisions (Parker)
+!         IF( (which_term==0.or.which_term==3).and.  l.ne.0) THEN
+!           IF(l==lv1) THEN
+!             IF(spatial2d) THEN
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l))*g_bounds(i,j,k,h,1)  !Phase mixing 1
+!             ELSE
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l))*g_bounds(i,j,k,h,1)  !Phase mixing 1
+!             END IF
+!           ELSE
+!             IF(spatial2d) THEN
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l))*g_in(i,j,k,l-1,h,0)  !Phase mixing 1
+!             ELSE
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l))*g_in(i,j,k,l-1,h,0)  !Phase mixing 1
+!             END IF
+!           END IF
+!         END IF
+!         IF( (which_term==0.or.which_term==9).and.  l.ne.nv0-1) THEN
+!           IF(l==lv2) THEN
+!             IF(spatial2d) THEN
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l+1))*g_bounds(i,j,k,h,2)
+!             ELSE
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l+1))*g_bounds(i,j,k,h,2)
+!             END IF
+!           ELSE
+!             IF(spatial2d) THEN
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*sqrt(herm_grid(l+1))*g_in(i,j,k,l+1,h,0)  !Phase mixing 2
+!             ELSE
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*sqrt(herm_grid(l+1))*g_in(i,j,k,l+1,h,0)  !Phase mixing 2
+!             END IF
+!           END IF
+!         END IF
+!         IF( (which_term==0.or.which_term==9).and.  l.eq.nv0-1 .and. nuno_closure) THEN
+!           diss_max= hyp_v*(REAL(nv0)/REAL(nv0-1))**hypv_order + nu*nv0
+!           IF(spatial2d) THEN
+!             g_closure=-i_complex*kzgrid(j)*sqrt(real(nv0))*g_in(i,j,k,l,h,0)/diss_max
+!             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(j)*SQRT(REAL(nv0))*g_closure
+!           ELSE
+!             g_closure=-i_complex*kzgrid(k)*sqrt(real(nv0))*g_in(i,j,k,l,h,0)/diss_max
+!             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)-i_complex*kzgrid(k)*SQRT(REAL(nv0))*g_closure
+!           END IF
+!         END IF
+!         IF( (which_term==0.or.which_term==4).and.  l==0) &
+!             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0) &
+!              -i_complex*kygrid(j)*omn*pi**(-0.25)*J0a(i,j)*phi_in(i,j,k)*I0a(i,j,h)  !density gradient term
+!         IF( (which_term==0.or.which_term==5).and.  l==grad1_flag) THEN
+!             IF(spatial2d) THEN
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -i_complex*kzgrid(j)*pi**(-0.25)*J0a(i,j)*phi_in(i,j,k)*phi_mod1*I0a(i,j,h)      !delta_n,1 term
+!             ELSE
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -i_complex*kzgrid(k)*pi**(-0.25)*J0a(i,j)*phi_in(i,j,k)*phi_mod1*I0a(i,j,h)      !delta_n,1 term
+!             END IF
+!         END IF
+!         IF( (which_term==0.or.which_term==6).and.  l==grad2_flag) &
+!             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -2.0**(-0.5)*pi**(-0.25)*omt*i_complex*kygrid(j)*J0a(i,j)*phi_in(i,j,k)*phi_mod2*I0a(i,j,h) !grad T drive
+!         !Extra term for FLR effects and Hankel modification 
+!         IF( (which_term==0.or.which_term==7).and. ( l==0.and.((flr_on.and.flr_extra).or.(.not.mu_integrated))  )) &
+!             rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0) &
+!                  +i_complex*kygrid(j)*omt*pi**(-0.25)*( 0.5*(kxgrid(i)**2+kygrid(j)**2) )*J0a(i,j)*phi_in(i,j,k)*I1a(i,j,h)  !Extra flr term
+!
+!         IF(which_term==0.or.which_term==10) THEN
+!            !!!!!hyp_conv
+!            !!!!!hyp_conv
+!            IF(k==0.and..not.spatial2d) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -hyp_nu*hyp_conv*g_in(i,j,k,l,h,0)                            !kz=0 crook term
+!            IF(num_k_hyp_conv.gt.0) THEN
+!              IF((k.le.num_k_hyp_conv.or.k.ge.nkz0-num_k_hyp_conv).and..not.spatial2d.and.k.ne.0) &
+!                     rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                    -hyp_nu*hyp_conv*g_in(i,j,k,l,h,0)                            !crook term
+!              IF((j.le.num_k_hyp_conv.or.j.ge.nky0-num_k_hyp_conv).and.(j.ne.0).and.hyp_conv_ky) &
+!                     rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                    -hyp_nu*hyp_conv*g_in(i,j,k,l,h,0)                            !crook term
+!            END IF
+!            !!!!!hyp_conv
+!            !!!!!hyp_conv
+!
+!         END IF
+!         IF(which_term==0.or.which_term==8) THEN
+!            IF(j==0.and.k==0) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -nu*hyp_zonal*g_in(i,j,k,l,h,0)                            !Zonal crook term
+!           !IF(k==0.and.l==0) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!            IF(.not.spatial2d) rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                 -hyp_z*g_in(i,j,k,l,h,0)*(kzgrid(k)/kzmax0)**hypz_order !hyperviscous z
+!            IF(GyroLES.and..not.Gyroherm) THEN 
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&   
+!                  -hyp_x_herm*g_in(i,j,k,l,h,0)*(kxgrid(i)/kxmax0)**hypx_order   !hyperviscous x with herm. dep.
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -hyp_y_herm*g_in(i,j,k,l,h,0)*(kygrid(j)/kymax0)**hypy_order   !hyperviscous y with herm. dep.
+!            ELSE IF (GyroLES.and.Gyroherm) THEN
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&   
+!                  -hyp_x_herm1(l)*g_in(i,j,k,l,h,0)*(kxgrid(i)/kxmax0)**hypx_order   !hyperviscous x with herm. dep.
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -hyp_y_herm1(l)*g_in(i,j,k,l,h,0)*(kygrid(j)/kymax0)**hypy_order   !hyperviscous y with herm. dep.
+!            ELSE
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -hyp_x*g_in(i,j,k,l,h,0)*(kxgrid(i)/kxmax0)**hypx_order   !hyperviscous x
+!               rhs_out(i,j,k,l,h,0)=rhs_out(i,j,k,l,h,0)&
+!                  -hyp_y*g_in(i,j,k,l,h,0)*(kygrid(j)/kymax0)**hypy_order   !hyperviscous y
+!            END IF 
+!
+!         END IF
+!        END DO
+!       END DO
      END DO
    END DO
  END DO 
