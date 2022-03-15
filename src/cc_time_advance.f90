@@ -79,17 +79,17 @@ END SUBROUTINE iv_solver
 SUBROUTINE get_g_next(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz)
 
 ! COMPLEX, INTENT(inout) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
- COMPLEX, INTENT(in) :: b_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: b_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: b_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: v_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: v_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: v_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
  
  
- ALLOCATE(g_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
- ALLOCATE(k1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
- ALLOCATE(k2(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
+ ALLOCATE(b_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+ ALLOCATE(bk1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+ ALLOCATE(bk2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+
+ ALLOCATE(v_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+ ALLOCATE(vk1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+ ALLOCATE(vk2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
 
 !  !4th order Runge-Kutta
 !  first_stage=.true.
@@ -110,133 +110,61 @@ SUBROUTINE get_g_next(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz)
 
  !4th order Runge-Kutta
  first_stage=.true.
- CALL get_rhs(g_in,k1)
- g_2=g_in+(1.0/6.0)*dt*k1
+ CALL get_rhs(b_in,bk1)
+ b_2=b_in+(1.0/6.0)*dt*bk1
  first_stage=.false.
- !CALL get_rhs(g_in+0.5*dt*k1,k2)
- k1=g_in+0.5*dt*k1
- CALL get_rhs(k1,k2)
- g_2=g_2+(1.0/3.0)*dt*k2
- k2=g_in+0.5*dt*k2
- CALL get_rhs(k2,k1)
- g_2=g_2+(1.0/3.0)*dt*k1
- k1=g_in+dt*k1
- CALL get_rhs(k1,k2)
- g_in=g_2+(1.0/6.0)*dt*k2
- !g_in=g_2 
-
- DEALLOCATE(g_2)
- DEALLOCATE(k1)
- DEALLOCATE(k2)
-
- ALLOCATE(g_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
- ALLOCATE(k1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
- ALLOCATE(k2(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
+ !CALL get_rhs(b_in+0.5*dt*bk1,bk2)
+ bk1=b_in+0.5*dt*bk1
+ CALL get_rhs(bk1,bk2)
+ b_2=b_2+(1.0/3.0)*dt*bk2
+ bk2=b_in+0.5*dt*bk2
+ CALL get_rhs(bk2,bk1)
+ b_2=b_2+(1.0/3.0)*dt*bk1
+ bk1=b_in+dt*bk1
+ CALL get_rhs(bk1,bk2)
+ b_in=b_2+(1.0/6.0)*dt*bk2
+ !b_in=b_2 
 
  !4th order Runge-Kutta
  first_stage=.true.
- CALL get_rhs(g_in,k1)
- g_2=g_in+(1.0/6.0)*dt*k1
+ CALL get_rhs(v_in,vk1)
+ v_2=v_in+(1.0/6.0)*dt*vk1
  first_stage=.false.
- !CALL get_rhs(g_in+0.5*dt*k1,k2)
- k1=g_in+0.5*dt*k1
- CALL get_rhs(k1,k2)
- g_2=g_2+(1.0/3.0)*dt*k2
- k2=g_in+0.5*dt*k2
- CALL get_rhs(k2,k1)
- g_2=g_2+(1.0/3.0)*dt*k1
- k1=g_in+dt*k1
- CALL get_rhs(k1,k2)
- g_in=g_2+(1.0/6.0)*dt*k2
- !g_in=g_2 
+ !CALL get_rhs(v_in+0.5*dt*vk1,vk2)
+ vk1=v_in+0.5*dt*vk1
+ CALL get_rhs(vk1,vk2)
+ v_2=v_2+(1.0/3.0)*dt*vk2
+ vk2=v_in+0.5*dt*vk2
+ CALL get_rhs(vk2,vk1)
+ v_2=v_2+(1.0/3.0)*dt*vk1
+ vk1=v_in+dt*vk1
+ CALL get_rhs(vk1,vk2)
+ v_in=v_2+(1.0/6.0)*dt*vk2
+ !v_in=v_2 
 
- !4th order Runge-Kutta
- first_stage=.true.
- CALL get_rhs(g_in,k1)
- g_2=g_in+(1.0/6.0)*dt*k1
- first_stage=.false.
- !CALL get_rhs(g_in+0.5*dt*k1,k2)
- k1=g_in+0.5*dt*k1
- CALL get_rhs(k1,k2)
- g_2=g_2+(1.0/3.0)*dt*k2
- k2=g_in+0.5*dt*k2
- CALL get_rhs(k2,k1)
- g_2=g_2+(1.0/3.0)*dt*k1
- k1=g_in+dt*k1
- CALL get_rhs(k1,k2)
- g_in=g_2+(1.0/6.0)*dt*k2
- !g_in=g_2 
 
- !4th order Runge-Kutta
- first_stage=.true.
- CALL get_rhs(g_in,k1)
- g_2=g_in+(1.0/6.0)*dt*k1
- first_stage=.false.
- !CALL get_rhs(g_in+0.5*dt*k1,k2)
- k1=g_in+0.5*dt*k1
- CALL get_rhs(k1,k2)
- g_2=g_2+(1.0/3.0)*dt*k2
- k2=g_in+0.5*dt*k2
- CALL get_rhs(k2,k1)
- g_2=g_2+(1.0/3.0)*dt*k1
- k1=g_in+dt*k1
- CALL get_rhs(k1,k2)
- g_in=g_2+(1.0/6.0)*dt*k2
- !g_in=g_2 
+ IF(force_kz0eq0) b_in(:,:,0,:,:,:)=cmplx(0.0,0.0)
+ IF(force_ky0eq0) b_in(:,0,:,:,:,:)=cmplx(0.0,0.0)
+ IF(force_kx0eq0) b_in(0,:,:,:,:,:)=cmplx(0.0,0.0)
+ IF(nkz0.ge.2) b_in(:,:,hkz_ind+1,:,:,:)=cmplx(0.0,0.0)
+ b_in(:,hky_ind+1,:,:,:,:)=cmplx(0.0,0.0)
+ b_in(0,0,:,:,:,:)=cmplx(0.0,0.0)
 
- !4th order Runge-Kutta
- first_stage=.true.
- CALL get_rhs(g_in,k1)
- g_2=g_in+(1.0/6.0)*dt*k1
- first_stage=.false.
- !CALL get_rhs(g_in+0.5*dt*k1,k2)
- k1=g_in+0.5*dt*k1
- CALL get_rhs(k1,k2)
- g_2=g_2+(1.0/3.0)*dt*k2
- k2=g_in+0.5*dt*k2
- CALL get_rhs(k2,k1)
- g_2=g_2+(1.0/3.0)*dt*k1
- k1=g_in+dt*k1
- CALL get_rhs(k1,k2)
- g_in=g_2+(1.0/6.0)*dt*k2
- !g_in=g_2 
-
- !4th order Runge-Kutta
- first_stage=.true.
- CALL get_rhs(g_in,k1)
- g_2=g_in+(1.0/6.0)*dt*k1
- first_stage=.false.
- !CALL get_rhs(g_in+0.5*dt*k1,k2)
- k1=g_in+0.5*dt*k1
- CALL get_rhs(k1,k2)
- g_2=g_2+(1.0/3.0)*dt*k2
- k2=g_in+0.5*dt*k2
- CALL get_rhs(k2,k1)
- g_2=g_2+(1.0/3.0)*dt*k1
- k1=g_in+dt*k1
- CALL get_rhs(k1,k2)
- g_in=g_2+(1.0/6.0)*dt*k2
- !g_in=g_2 
+ IF(force_kz0eq0) v_in(:,:,0,:,:,:)=cmplx(0.0,0.0)
+ IF(force_ky0eq0) v_in(:,0,:,:,:,:)=cmplx(0.0,0.0)
+ IF(force_kx0eq0) v_in(0,:,:,:,:,:)=cmplx(0.0,0.0)
+ IF(nkz0.ge.2) v_in(:,:,hkz_ind+1,:,:,:)=cmplx(0.0,0.0)
+ v_in(:,hky_ind+1,:,:,:,:)=cmplx(0.0,0.0)
+ v_in(0,0,:,:,:,:)=cmplx(0.0,0.0)
 
 
 
-
-
-
-
-
-
-
- IF(force_kz0eq0) g_in(:,:,0,:,:,:)=cmplx(0.0,0.0)
- IF(force_ky0eq0) g_in(:,0,:,:,:,:)=cmplx(0.0,0.0)
- IF(force_kx0eq0) g_in(0,:,:,:,:,:)=cmplx(0.0,0.0)
- IF(nkz0.ge.2) g_in(:,:,hkz_ind+1,:,:,:)=cmplx(0.0,0.0)
- g_in(:,hky_ind+1,:,:,:,:)=cmplx(0.0,0.0)
- g_in(0,0,:,:,:,:)=cmplx(0.0,0.0)
-
- DEALLOCATE(g_2)
- DEALLOCATE(k1)
- DEALLOCATE(k2)
+ DEALLOCATE(b_2)
+ DEALLOCATE(bk1)
+ DEALLOCATE(bk2)
+ DEALLOCATE(v_2)
+ DEALLOCATE(vk1)
+ DEALLOCATE(vk2)
 
 END SUBROUTINE get_g_next
 
@@ -246,26 +174,19 @@ END SUBROUTINE get_g_next
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE get_rhs(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz,rhs_out_bx, rhs_out_by, rhs_out_bz,rhs_out_vx, rhs_out_vy, rhs_out_vz,0)
 
- COMPLEX, INTENT(in) :: b_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: b_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: b_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: v_inx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: v_iny(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(in) :: v_inz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out_bx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out_by(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out_bz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out_vx(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out_vy(0:nkx0-1,0:nky0-1,lkz1:lkz2)
- COMPLEX, INTENT(out) :: rhs_out_vz(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+ COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+
+ COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(out) :: rhs_out_v(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
 
 !  COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
 !  COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
   INTEGER :: k
 
-  CALL get_rhs_lin(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz,rhs_out_bx, rhs_out_by, rhs_out_bz,rhs_out_vx, rhs_out_vy, rhs_out_vz,0)
+  CALL get_rhs_lin(b_in,v_in,rhs_out_b, rhs_out_v,0)
 
-  IF(nonlinear.and..not.linear_nlbox) CALL get_rhs_nl(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz,rhs_out_bx, rhs_out_by, rhs_out_bz,rhs_out_vx, rhs_out_vy, rhs_out_vz,0)
+  IF(nonlinear.and..not.linear_nlbox) CALL get_rhs_nl(b_in, v_in,rhs_out_b,rhs_out_v,0)
 
 END SUBROUTINE get_rhs
 
