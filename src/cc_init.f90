@@ -73,7 +73,6 @@ END SUBROUTINE init_run
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE arrays
   USE par_mod
-  USE field_solver, only: initialize_phi
   USE flr_effects
   USE hk_effects
   USE Gaussquadrature
@@ -145,8 +144,6 @@ SUBROUTINE arrays
   
   IF(.not.allocated(g_1))&
       ALLOCATE(g_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)) 
-  IF(.not.allocated(phi)) ALLOCATE(phi(0:nkx0-1,0:nky0-1,lkz1:lkz2)) 
-  IF(.not.allocated(phi_denom)) ALLOCATE(phi_denom(0:nkx0-1,0:nky0-1)) 
   IF(.not.allocated(kxgrid)) ALLOCATE(kxgrid(0:nkx0-1))
   IF(.not.allocated(kygrid)) ALLOCATE(kygrid(0:nky0-1))
   IF(spatial2d) THEN
@@ -239,7 +236,6 @@ SUBROUTINE arrays
      END IF
   END IF
 
-  CALL initialize_phi
   !Set up FLR terms
   CALL get_J0
   
@@ -276,7 +272,6 @@ END SUBROUTINE arrays
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE arrays_temp
   USE par_mod
-  USE field_solver, only: initialize_phi
   USE flr_effects
   USE hk_effects
   USE Gaussquadrature
@@ -344,8 +339,6 @@ SUBROUTINE arrays_temp
   
   IF(.not.allocated(g_1))&
       ALLOCATE(g_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)) 
-  IF(.not.allocated(phi)) ALLOCATE(phi(0:nkx0-1,0:nky0-1,lkz1:lkz2)) 
-  IF(.not.allocated(phi_denom)) ALLOCATE(phi_denom(0:nkx0-1,0:nky0-1)) 
   IF(.not.allocated(kxgrid)) ALLOCATE(kxgrid(0:nkx0-1))
   IF(.not.allocated(kygrid)) ALLOCATE(kygrid(0:nky0-1))
   IF(spatial2d) THEN
@@ -439,7 +432,6 @@ SUBROUTINE arrays_temp
      END IF
   END IF
 
-  CALL initialize_phi
   !Set up FLR terms
   CALL get_J0
   
@@ -477,8 +469,6 @@ SUBROUTINE finalize_arrays
   USE par_mod
 
   IF(allocated(g_1)) DEALLOCATE(g_1)
-  IF(allocated(phi)) DEALLOCATE(phi)
-  IF(allocated(phi_denom)) DEALLOCATE(phi_denom)
 
   IF(allocated(kxgrid)) DEALLOCATE(kxgrid)
   IF(allocated(kygrid)) DEALLOCATE(kygrid)
