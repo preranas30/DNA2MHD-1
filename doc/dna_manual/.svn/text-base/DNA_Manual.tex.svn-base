@@ -1,0 +1,120 @@
+\documentclass[11pt, a4paper, oneside]{book}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}                                
+\usepackage{amsmath}                               
+\usepackage{amssymb}     
+\usepackage{amsthm}                         
+\usepackage{color}
+\usepackage{times}
+\usepackage{subfiles}
+\usepackage{makeidx}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage[english]{babel}
+\usepackage[nodayofweek]{datetime}
+\usepackage[colorlinks, linkcolor={blue}, citecolor={blue}]{hyperref}
+
+
+%% Figure arrangement 
+\renewcommand{\textfraction}{0.10}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.95}
+\renewcommand{\floatpagefraction}{0.35}
+\setcounter{topnumber}{1}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{4}
+
+%% Text frame dimension per page
+\textheight230truemm
+\textwidth155truemm
+\hoffset=-10truemm
+\voffset=-10truemm
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\todayiso}{\twodigit\day \ \monthname \ \the\year}
+\newcommand{\dna}{{\sc dna\ }}
+\newcommand{\uu}{\mathbf u}
+\newcommand{\bb}{\mathbf b}
+\newcommand{\zz}{\mathbf z}
+\newcommand{\ee}{\mathbf e}
+\newcommand{\ff}{\mathbf f}
+\newcommand{\vv}{\mathbf v}
+\newcommand{\rr}{\mathbf r}
+\newcommand{\xx}{\mathbf x}
+\newcommand{\kk}{\mathbf k}
+\newcommand{\pp}{\mathbf p}
+\newcommand{\qq}{\mathbf q}
+\newcommand{\bell}{\boldsymbol{\ell}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\titleformat{\chapter}
+[display]
+{\normalfont\large\filcenter\scshape}
+{\titlerule \vspace{1pt} \titlerule \Large{\scshape\chaptertitlename} \thechapter}
+{0.2pc}
+{\titlerule \vspace{1pt} \titlerule \vspace{0.5 pc} \huge}
+
+\titleformat{\section}
+[frame]
+{\normalfont}
+{\filright\footnotesize\enspace \sc{Section} \thesection\enspace}
+{4pt}
+{\large\bfseries\scshape\filcenter}
+
+\titleformat{\subsection}
+[block]
+{\small\scshape}
+{\bfseries\scshape\thesubsection}
+{1em}
+{\large\bfseries\scshape}
+
+\titleformat{\subsubsection}
+[block]
+{\small\scshape}
+{\small\scshape\thesubsubsection}
+{1em}
+{\small\scshape}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Direct Numerical Analysis of fundamental gyrokinetic turbulence dynamics \\ \  \\ \  \dna\ \sc solver manual}
+\author{\dna\  team}
+\maketitle
+\tableofcontents
+\bigskip \bigskip \bigskip \titlerule \vspace{1pt} \titlerule
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Introduction to \dna}
+\input{sect_intro_equations.tex}
+\newpage
+\input{sect_intro_quantities.tex}
+\newpage
+
+\chapter{Core Components files of \dna}
+\input{sect_src_cc_files.tex}
+\newpage
+\input{sect_src_cc_input.tex}
+\newpage
+
+\chapter{Extra Elements files of \dna}
+\input{sect_src_ee_files.tex}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}

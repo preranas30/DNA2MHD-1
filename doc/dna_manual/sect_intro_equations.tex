@@ -1,0 +1,401 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Kinetic Slab ITG Model }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Initial gyrokinetic equations}
+
+We begin with the gyrokinetic equations described in Ref.~\cite{F_thesis} and immediately apply the adiabatic electron approximation, and unsheared slab geometry.  Using an unsheared slab eliminates the curvature and trapping terms, so that the starting point for this derivation is the gyrokinetc equation, 
+\begin{equation}
+\frac{\partial f}{\partial t}=\mathcal{L}[f]+\mathcal{N}[f],
+\label{basic_gk}
+\end{equation}
+with the linear and nonlinear operators defined as follows:
+\begin{equation}
+\mathcal{L}[f]=-\left [\omega_n+\omega_T \left (v_{||}^2+\mu - \frac{3}{2} \right) \right ]F_0 i k_y J_0(\lambda) \phi -\sqrt{2}v_{||} \left (\partial_z f +  F_0  \partial_z J_0(\lambda) \phi \right ) + C(f),
+\label{gk_linear}
+\end{equation}
+and
+\begin{equation}
+\mathcal{N}[f]=\sum_{\vec{k}^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) J_0(\lambda) \phi_{\vec{k}^{\prime}_\perp}f_{\vec{k}_\perp-\vec{k}^{\prime}_\perp},
+\label{gk_nl}
+\end{equation}
+where $\omega_n=L_{ref}/L_n$, $\omega_T=L_{ref}/L_T$, $F_0=\pi^{-3/2}e^{-v_{||}^2-\mu }$, $C$ represents a collision operator, $J_0$ is the zeroth-order Bessel function representing a gyroaverage, $\lambda= \sqrt{2 \mu } k_\perp$, and the parallel scale length is set to $L_{ref}$.  The gyrocenter distribution function, $g_{k_x,k_y}(z,v_{||},\mu)$, is a function of three spatial and two velocity coordinates, but these dependencies will not be explicitly noted at this time.  The normalization is as in Ref.~\cite{F_thesis} (see pgs. 28-30), with $m_{ref}=m_{0i}$, $q_i=q_e$, $B_{ref}=B_0$, $n_{ref}=n_{0i}$, and $T_{ref}=T_{0i}$.  Note that this normalization produces $v_{Ti} \rightarrow \sqrt{2}$.    
+
+The field equation for the electrostatic potential is,
+\begin{equation}
+\phi_{k_x,k_y}=\frac{ \int J_0(\lambda) g dv_{||} d\mu + \tau \langle \phi \rangle_{FS}\delta_{k_y,0}}{\tau + \left [1-\Gamma_0 (b) \right ] },
+\label{field_eqn}
+\end{equation}
+where $\tau$ is the ratio of ion to electron temperature, $\Gamma_0(x)=I_0(x)e^{-x}$, $I_0(x)$ is the zeroth order modified Bessel function, $b_i=k^2_{\perp}$, and the flux-surface averaged potential is, 
+\begin{equation}
+\langle \phi \rangle_{FS}=\frac{\pi \langle \int J_0(\lambda) g dv_{||} d\mu \rangle_{FS}}{\left[1- \Gamma_0(b) \right]}.
+\label{field_eqn}
+\end{equation}
+Cases with and without the flux-surface-averaged potential term will be considered, but the term will be kept in this document for the purpose of completeness.  
+
+%Note that $b_i=\frac{1}{2}\rho_i^2 k^2_\perp$, so that $\Gamma_0(b)$ is also quite close to $1.0$ in the low-$k_\perp$ limit (see Fig.~\ref{figure:gamma_0}).  However, we will retain this term because a singularity would otherwise develop in the flux-surface-averaged potential.
+
+%\begin{figure}
+%\includegraphics[width=15.0cm]{Bessels}
+%\caption{hello}
+%\label{figure:gamma_0}
+%\end{figure}
+
+%\noindent{\bf II. Integration over perpendicular velocity }
+
+%Now we integrate over $\mu$ in order to reduce the velocity dynamics exclusively to the parallel direction.  Since the gyroaverages have been set to one, the only $\mu$ dependence remaining is in the distribution function, $g$, the Maxwellian background distribution function, $F_0$, and the $\mu B_0$ term in the gradient term.  This integration is performed as,   
+
+%\begin{equation}
+%\int_0^\infty \left [ \frac{\partial g}{\partial t}=\mathcal{L}[g]+\mathcal{N}[g] \right ] \pi d\mu_0, 
+%\end{equation}
+%where $\mu_0 \equiv B_0 \mu$.  We only need to evaluate the following expressions, 
+%\begin{equation}
+%\int_0^\infty F_0 \pi d\mu_0 = \pi^{-\frac{1}{2}}e^{-v_{||}^2},
+%\label{field_eqn}
+%\end{equation}
+%and,
+%\begin{equation}
+%\int_0^\infty \mu_0 F_0 \pi d\mu_0 = \pi^{-\frac{1}{2}}e^{-v_{||}^2}.
+%\label{field_eqn}
+%\end{equation}
+% 
+%In order to simplify notation, throughout the remainder of this document we will define $v\equiv v_{||}$,
+%\begin{equation}
+% F_0 \equiv \pi^{-\frac{1}{2}}e^{-v^2},
+%\label{field_eqn}
+%\end{equation}
+%and,
+%\begin{equation}
+%%\int_0^\infty g(v_{||},\mu) \pi d\mu_0 \equiv g(v).
+% g(v) \equiv \int_0^\infty g(v_{||},\mu) \pi d\mu_0.
+%\label{field_eqn}
+%\end{equation}
+%
+%At this point the linear operator is as follows, 
+%\begin{equation}
+%\mathcal{L}[g]=-\left [\omega_n+\omega_T \left (v^2 - \frac{1}{2} \right) \right ]F_0 i k_y \phi -\frac{v_{Ti} v}{L_z} \left (\partial_z g + \frac{q_i F_0}{T_{0i}}\partial_z \phi \right ) +C(g),
+%\label{gk_linear}
+%\end{equation}
+%and the representation of the nonlinearity is unchanged.  The field equation is slightly changed in that the velocity integrals are now merely $q_i n_{0i} \int g dv$.
+%
+%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{FLR Effects }
+
+We wish to reduce the model to one velocity dimension by operating on the gyrokinetic equation with a $\mu$-integral: $\pi \int_0^\infty [X] d\mu$ .  This requires a treatment of the gyroaverage operators.  The gyroaverages in the linear operator can be calculated analytically since additional $\mu$ dependecies enter only in the form of,
+\begin{equation}
+ \int_0^\infty J_0(\sqrt{2 \mu} k_\perp) e^{-\mu} d\mu,
+\end{equation}
+and,
+\begin{equation}
+ \int_0^\infty \mu J_0(\sqrt{2 \mu} k_\perp) e^{-\mu} d\mu.
+\end{equation}
+These can be calculated by considering the Taylor series of the zeroth order Bessel function,
+\begin{equation}
+J_0(x)=\sum_{n=0}^\infty \frac{1}{(n!)^2}\left ( \frac{i x}{2} \right )^{2n}.
+\end{equation}
+Applying the appropriate integrals to this expansion, the following identities are determined,
+\begin{equation}
+\int_0^\infty J_0(\sqrt{\mu} k_\perp) e^{-\mu} d\mu=e^{-b/2},
+\end{equation}
+and
+\begin{equation}
+\int_0^\infty \mu J_0(\sqrt{ 2 \mu} k_\perp) e^{-\mu} d\mu=e^{-b/2}\left ( 1 - b/2 \right ),
+\end{equation}
+where $b\equiv k_{\perp}^2$.
+
+%\begin{equation}
+%\phi_{k_x,k_y}=\frac{  \int J_0 g dv_{||} d\mu + \kappa \langle \phi \rangle_{FS}\delta_{k_y,0}}{\kappa + \left [1-\Gamma_0 (b) \right ] },
+%\label{field_eqn}
+%\end{equation}
+The gyroaverage operator in the Poisson equation is approximated by assuming that the $v_{\perp}$ dependence of the perturbed distribution function is Maxwellian (i.e., of the form $e^{-\mu}$), in which case the Poisson equation is modified only by an exponential factor as follows,
+\begin{equation}
+\phi_{k_x,k_y} = \frac{ \int e^{-k_{\perp}^2/2} g dv_{||} + \tau \langle \phi \rangle_{FS}\delta_{k_y,0}}{\tau + \left [1-\Gamma_0 (b) \right ] }.
+\label{flr_field_eqn}
+\end{equation}
+This is the same assumption used in Ref.~\cite{watanabe04}.  For a discussion of the limitations of this approximation, see Ref.~\cite{dorland}.  For our purposes, these limitations are not of critical importance as we only need some reasonable mechanism to provide stabilization of high-$k_{\perp}$ modes.
+
+Including these FLR effects produces the following operators,
+\begin{equation}
+\mathcal{L}[g]=-\left [\omega_n+\omega_T \left (v^2 - \frac{1}{2} - \frac{b}{2} \right) \right ]F_0 i k_y e^{-b/2} \phi -\sqrt{2} v \left (\partial_z g +  F_0 e^{-b/2} \partial_z  \phi \right ) + C(g),
+\label{gk_linear}
+\end{equation}
+and
+\begin{equation}
+\mathcal{N}[g]=\sum_{k^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right )  e^{-k^{\prime 2}_{\perp}/2} \phi_{k^{\prime}_\perp}g_{k_\perp-k^{\prime}_\perp},
+\label{gk_nl}
+\end{equation}
+where $v \equiv v_{||}$, $g(v)$ has only parallel velocity dependence, and the background distribution function is now $F_0 \equiv \pi^{-\frac{1}{2}}e^{-v^2}$.
+
+%\label{field_eqn}
+%\end{equation}
+%and,
+%\begin{equation}
+%\int_0^\infty g(v_{||},\mu) \pi d\mu_0 \equiv g(v).
+% g(v) \equiv \int_0^\infty g(v_{||},\mu) \pi d\mu_0.
+%\label{field_eqn}
+%\end{equation}
+
+
+%When the FLR effects are translated into the Hermite representation we have,
+%\begin{eqnarray}
+%\mathcal{L}[\hat{g}_{n,k_z}]=  \frac{\omega_T i k_y}{\pi^{\frac{1}{4}}} \frac{k_{\perp}^2}{2} e^{-k_{\perp}^2/2}\phi_{k_z}  \delta_{n,0} -\frac{\omega_n i k_y}{\pi^{\frac{1}{4}}} e^{-k_{\perp}^2/2}\phi_{k_z}  \delta_{n,0}-\frac{\omega_T i k_y}{\sqrt{2}\pi^{\frac{1}{4}}} e^{-k_{\perp}^2/2}\phi_{k_z} \delta_{n,2}\nonumber \\
+% - \frac{ i k_z}{\pi^{\frac{1}{4}}}e^{-k_{\perp}^2/2}\phi_{k_z} \delta_{n,1} - i k_z\left [\sqrt{n} \hat{g}_{n-1,k_z} + \sqrt{n+1}\hat{g}_{n+1,k_z} \right ] -\nu n \hat{g}_{n,k_z}, %+C(\hat{g}_{n,k_z}),
+%\label{linop_flr}
+%\end{eqnarray}
+%with the electrostatic potential defined as in Eq.~\ref{flr_field_eqn}.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Hermite representation }
+
+Now we would like to transform the equations into a basis of Hermite polynomials.  The basis functions are $H_n(v)e^{-v^2}$, where $H_n$ are the Hermite polynomials,   
+\begin{equation}
+H_n(x)=\frac{(-1)^n e^{x^2}}{\left ( 2^n n! \sqrt{\pi} \right )^\frac{1}{2}}\frac{d^n}{dx^n}e^{-x^2},
+\end{equation}
+so that the expansion of the distribution function is,
+\begin{equation}
+g(v)=\sum^\infty_{n=0} \hat{g}_n H_n(v)e^{-v^2}.
+\end{equation}
+The orthogonality relation for Hermite polynomials is,
+\begin{equation}
+\int^\infty_{-\infty} H_n(x) H_m(x) e^{-x^2} dx = \delta_{n,m},
+\end{equation}
+so that the Hermite coefficients can be extracted by integrating over $v$, 
+\begin{equation}
+\hat{g}_n=\int^\infty_{-\infty} g(v) H_n(v) dv.
+\end{equation}
+In order to transform the equations to the Hermite basis, we exploit the orthogonality relation and operate on the gyrokinetic equation, 
+\begin{equation}
+\int^\infty_{-\infty} \left [ \frac{\partial g}{\partial t}=\mathcal{L}[g]+\mathcal{N}[g] \right ] H_n(v) dv.
+\end{equation}
+We will use the following relations to evaluate the relevant expressions:
+\begin{equation}
+H_0(x) = \pi^{-\frac{1}{4}},
+\end{equation}
+\begin{equation}
+H_1(x) = \sqrt{2}\pi^{-\frac{1}{4}}x,
+\end{equation}
+\begin{equation}
+H_2(x) = \frac{2x^2-1}{\sqrt{2}\pi^{\frac{1}{4}}},
+\end{equation}
+and
+\begin{equation}
+\sqrt{2}xH_n(x)=\sqrt{n+1}H_{n+1}(x)+\sqrt{n}H_{n-1}(x).
+\label{equation:x_times_h}
+\end{equation}
+
+We need to evaluate terms which include the following integrals:
+\begin{equation}
+\int^\infty_{-\infty} v^2 F_0(v) H_n(v) dv =  \int^\infty_{-\infty}\pi^{-\frac{1}{4}} \left[\frac{H_2}{\sqrt{2}}+\frac{H_0}{2} \right]e^{-v^2} H_n(v) dv = \frac{ \pi^{-\frac{1}{4}}}{2} \left[ \sqrt{2}\delta_{n,2}+\delta_{n,0} \right],
+\label{equation:v2f0}
+\end{equation}
+\begin{equation}
+\int^\infty_{-\infty} v F_0(v) H_n(v) dv =  \int^\infty_{-\infty}\frac{\pi^{-\frac{1}{4}}}{\sqrt{2}} H_1(v) H_n(v)e^{-v^2} dv = \frac{ \pi^{-\frac{1}{4}}}{\sqrt{2}} \delta_{n,1},
+\label{equation:vf0}
+\end{equation}
+ and,
+\begin{equation}
+\int^\infty_{-\infty} F_0(v) H_n(v) dv =  \pi^{-\frac{1}{4}} \delta_{n,0}.
+\label{equation:f0}
+\end{equation}
+We also need to treat the term,
+\begin{equation}
+vg=\sum^\infty_{n=0} \hat{g}_n e^{-v^2} \left [ \sqrt{\frac{n+1}{2}}H_{n+1}+\sqrt{\frac{n}{2}} H_{n-1} \right ], 
+\end{equation}
+which becomes in the Hermite representation, 
+\begin{equation}
+\int^\infty_{-\infty} v g(v) H_n(v) dv =  \left ( \frac{n}{2} \right )^\frac{1}{2}\hat{g}_{n-1}+\left( \frac{n+1}{2} \right )^\frac{1}{2}\hat{g}_{n+1}.
+\label{equation:vg}
+\end{equation}
+
+With these results (Eqns.~\ref{equation:v2f0}-\ref{equation:f0},~\ref{equation:vg}) we can rewrite the gyrokinetic equation in the Hermite basis, 
+\begin{equation}
+\frac{\partial \hat{g}_n}{\partial t}=\mathcal{L}[\hat{g}_n]+\mathcal{N}[\hat{g}_n],
+\end{equation}
+with the following linear and nonlinear operators:
+\begin{eqnarray}
+\mathcal{L}[\hat{g}_n]= \frac{\omega_T i k_y}{\pi^{\frac{1}{4}}} \frac{k_{\perp}^2}{2} e^{-b/2} \phi  \delta_{n,0}-\frac{\omega_n i k_y}{\pi^{\frac{1}{4}}} e^{-b/2} \phi  \delta_{n,0}-\frac{\omega_T i k_y}{\sqrt{2}\pi^{\frac{1}{4}}} e^{-b/2}\phi \delta_{n,2} \nonumber \\
+-\left [\left ( \frac{n}{2} \right )^\frac{1}{2} \partial_z \hat{g}_{n-1} + \left( \frac{n+1}{2} \right )^\frac{1}{2} \partial_z \hat{g}_{n+1} \right ] -\pi^{-\frac{1}{4}}e^{-b/2}\partial_z \phi \delta_{n,1}+C(\hat{g}_n),
+\end{eqnarray}
+and
+\begin{equation}
+\mathcal{N}[\hat{g}_n]=\sum_{k^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) e^{-k^{\prime 2}_{\perp}/2} \phi_{k^{\prime}_\perp}\hat{g}_{n,k_\perp-k^{\prime}_\perp}.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Collision operator }
+
+The Lenard-Bernstein collision operator has a particularly simple representation in the Hermite basis.  In direct velocity space the collision operator is,
+\begin{equation}
+C[g]=\nu g + \nu v \partial_v g + \frac{1}{2}\nu \partial^2_v g.
+\end{equation}
+Using Eqn.~\ref{equation:x_times_h}, along with the following identity,
+\begin{equation}
+H^\prime_n=\sqrt{2n}H_{n-1},
+\end{equation}
+the collision operator can be expressed in the Hermite basis.  %The three terms in the collision operator are transformed to the following,
+%\begin{equation}
+%\nu g \rightarrow \nu \hat{g_n},
+%\end{equation}
+%\begin{equation}
+%\nu v \partial_v g \rightarrow -\nu \left [ \frac{1}{2}\hat{g}_{n-2} + (n+1) \hat{g}_n \right ]
+%\end{equation},
+%and
+%\begin{equation}
+% \frac{1}{2}\nu \partial^2_v g \rightarrow \frac{1}{2} \nu \hat{g}_{n-2}.
+%\end{equation}
+This procedure reveals the Hermite polynomials to be eigenfunctions of the Lenard-Bernstein collision operator,
+\begin{equation}
+C[\hat{g}_n]=-\nu n \hat{g}_n.
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Field equation in the Hermite representation }
+
+The field equation also has a simple form in the Hermite representation.  The velocity space integral reduces to the $n=0$ contribution of the distribution function,
+\begin{equation}
+\int g dv_{||} = \int \sum^\infty_{n=0} \hat{g}_n H_n(v)e^{-v^2} dv = \pi^\frac{1}{4}  \hat{g}_0,
+\end{equation}
+so that the field equation is,
+\begin{equation}
+\phi_{k_x,k_y}=\frac{ q_i n_{0i} \pi^\frac{1}{4} e^{-k^2_\perp/2} \hat{g}_0 + \tau \langle \phi \rangle_{FS}\delta_{k_y,0}}{\tau + \frac{q^2_{i}n_{0i}}{T_{0i}}\left [1-\Gamma_0 (b) \right ] },
+\label{field_eqn}
+\end{equation}
+where the flux-surface-averaged potential is, 
+\begin{equation}
+\langle \phi \rangle_{FS}=\frac{\pi^\frac{1}{4}  \langle e^{-k^2_\perp/2} \hat{g}_0 \rangle_{FS}}{\left[1- \Gamma_0(b) \right]}.
+\label{field_eqn}
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Fourier representation in the parallel direction }
+
+We also wish to implement a Fourier representation in the parallel coordinate,
+\begin{equation}
+g(z)=\sum^\infty_{k_z=-\infty} \hat{g}_{k_z} e^{i k_z z},
+\end{equation}
+so that the Fourier coefficients are defined,
+\begin{equation}
+\hat{g}_{k_z}=\frac{1}{2\pi}\int^\pi_{-\pi} g(z) e^{-ik_z z}dz.
+\end{equation}
+With this Fourier representation, parallel derivatives in the linear operator simply reduce to multiplication by $ik_z$, and another summation is introduced in the nonlinearity so that the final equations are as follows: 
+\begin{equation}
+\frac{\partial \hat{g}_{n,k_z}}{\partial t}=\mathcal{L}[\hat{g}_{n,k_z}]+\mathcal{N}[\hat{g}_{n,k_z}],
+\end{equation}
+with the following linear and nonlinear operators:
+\begin{eqnarray}
+\mathcal{L}[\hat{g}_{n,k_z}]=  \frac{\omega_T i k_y}{\pi^{\frac{1}{4}}} \frac{k_{\perp}^2}{2} e^{-k_{\perp}^2/2}\phi_{k_z}  \delta_{n,0} -\frac{\omega_n i k_y}{\pi^{\frac{1}{4}}} e^{-k_{\perp}^2/2}\phi_{k_z}  \delta_{n,0}-\frac{\omega_T i k_y}{\sqrt{2}\pi^{\frac{1}{4}}} e^{-k_{\perp}^2/2}\phi_{k_z} \delta_{n,2}\nonumber \\
+ - \frac{ i k_z}{\pi^{\frac{1}{4}}}e^{-k_{\perp}^2/2}\phi_{k_z} \delta_{n,1} - i k_z\left [\sqrt{n} \hat{g}_{n-1,k_z} + \sqrt{n+1}\hat{g}_{n+1,k_z} \right ] -\nu n \hat{g}_{n,k_z}, %+C(\hat{g}_{n,k_z}),
+\label{linop_flr}
+\end{eqnarray}
+and
+\begin{equation}
+\mathcal{N}[g]=\sum_{k^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) e^{-k^{\prime 2}_{\perp}/2} \phi_{k^{\prime}_\perp}g_{k_\perp-k^{\prime}_\perp}.
+\label{gk_nl}
+\end{equation}
+%where $v \equiv v_{||}$, $g(v)$ has only parallel velocity dependence, and the background distribution function is now $F_0 \equiv \pi^{-\frac{1}{2}}e^{-v^2}$.
+
+
+%\begin{eqnarray}
+%\mathcal{L}[\hat{g}_{n,k_z}]=-\frac{\omega_n i k_y}{\pi^\frac{1}{2}} \phi_{k_z} \delta_{n,0}-\frac{\omega_T i k_y}{4\pi^\frac{1}{2}}\phi_{k_z} \delta_{n,2}+ik_z\frac{v_{Ti}}{L_z}\left [ \frac{1}{2} \hat{g}_{n-1,k_z} + (n+1) \hat{g}_{n+1,k_z} \right ] +\frac{v_{Ti}q_i}{2L_z\pi^\frac{1}{2}T_{0i}}ik_z \phi_{k_z} \delta_{n,1} - \nu n \hat{g}_n.
+%\mathcal{L}[\hat{g}_{n,k_z}]= -\frac{\omega_n i k_y}{\pi^{\frac{1}{4}}} \phi_{k_z}  \delta_{n,0}-\frac{\omega_T i k_y}{\sqrt{2}\pi^{\frac{1}{4}}} \phi_{k_z} \delta_{n,2}-\frac{v_{Ti}q_i i k_z}{\sqrt{2}L_z\pi^{\frac{1}{4}}T_{0i}}\phi_{k_z} \delta_{n,1} \nonumber\\
+%-\frac{v_{Ti}i k_z}{L_z}\left [\left ( \frac{n}{2} \right )^\frac{1}{2} \hat{g}_{n-1,k_z} + \left( \frac{n+1}{2} \right )^\frac{1}{2}  \hat{g}_{n+1,k_z} \right ]+C(\hat{g}_{n,k_z}),%\frac{v_{Ti}q_i i k_z}{2L_z\pi^{\frac{1}{4}}T_{0i}}\phi_{k_z} \delta_{n,1}+C(\hat{g}_n),
+%\end{eqnarray}
+%and
+%\begin{equation}
+%\mathcal{N}[\hat{g}_{n,k_z}]=\sum_{k^{\prime}_z}\sum_{k^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) \phi_{k^{\prime}_\perp,k^{\prime}_z}\hat{g}_{n,k_\perp-k^{\prime}_\perp,k_z-k^{\prime}_z}.
+%\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Summary Equations }
+
+%The equations can be simplified if we choose the reference normalization parameters to equal the corresponding ion parameters (assuming $q_i=-q_e$ and $n_{0i}=n_{0e}$).  Note that we set $T_{ref}=T_{0i}$ so that $v_{Ti}\rightarrow\sqrt{2}$.  Also, we set the normalized parallel scale length to one, $L_z \rightarrow 1$.  
+The time evolution of the distribution function is,
+\begin{equation}
+\frac{\partial \hat{g}_{n}}{\partial t}=\mathcal{L}[\hat{g}_{n}]+\mathcal{N}[\hat{g}_{n}],
+\end{equation}
+with the following linear and nonlinear operators:
+\begin{eqnarray}
+\mathcal{L}[\hat{g}_{n}]=  \frac{\omega_T i k_y}{\pi^{\frac{1}{4}}} \frac{k_{\perp}^2}{2} e^{-k_{\perp}^2/2}\phi  \delta_{n,0} -\frac{\omega_n i k_y}{\pi^{\frac{1}{4}}} e^{-k_{\perp}^2/2}\phi  \delta_{n,0}-\frac{\omega_T i k_y}{\sqrt{2}\pi^{\frac{1}{4}}} e^{-k_{\perp}^2/2}\phi \delta_{n,2}\nonumber \\
+ - \frac{ i k_z}{\pi^{\frac{1}{4}}}e^{-k_{\perp}^2/2}\phi \delta_{n,1} - i k_z\left [\sqrt{n} \hat{g}_{n-1} + \sqrt{n+1}\hat{g}_{n+1} \right ] -\nu n \hat{g}_{n}, %+C(\hat{g}_{n,k_z}),
+\label{linop_final}
+\end{eqnarray}
+and
+\begin{equation}
+\mathcal{N}[g]=\sum_{{\bf k}^{\prime}}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) e^{-k^{\prime 2}_{\perp}/2} \phi_{{\bf k}^{\prime}}g_{{\bf k}-{\bf k}^{\prime}}.
+\label{nlop_final}
+\end{equation}
+
+%\begin{eqnarray}
+%\mathcal{L}[\hat{g}_{n,k_z}]= -\frac{\omega_n i k_y}{\pi^{\frac{1}{4}}} \phi_{k_z}  \delta_{n,0}-\frac{\omega_T i k_y}{\sqrt{2}\pi^{\frac{1}{4}}} \phi_{k_z} \delta_{n,2}- \frac{ i k_z}{\pi^{\frac{1}{4}}}\phi_{k_z} \delta_{n,1}\nonumber \\
+%- i k_z\left [\sqrt{n} \hat{g}_{n-1,k_z} + \sqrt{n+1}\hat{g}_{n+1,k_z} \right ] -\nu n \hat{g}_{n,k_z} %+C(\hat{g}_{n,k_z}),
+%\label{linop_final}
+%\end{eqnarray}
+%and
+%\begin{equation}
+%\mathcal{N}[\hat{g}_{n,k_z}]=\sum_{k^{\prime}_z}\sum_{k^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) \phi_{k^{\prime}_\perp,k^{\prime}_z}\hat{g}_{n,k_\perp-k^{\prime}_\perp,k_z-k^{\prime}_z}.
+%\end{equation}
+The equation for the electrostatic potential is,
+\begin{equation}
+\phi_{k_x,k_y}=\frac{ \pi^\frac{1}{4}  e^{-k_{\perp}^2/2} \hat{g}_0 + \frac{T_{0i}}{T_{0e}} \langle \phi \rangle_{FS}\delta_{k_y,0}}{\frac{T_{0i}}{T_{0e}} + \left [1-\Gamma_0 (b) \right ] },
+\label{field_eqn}
+\end{equation}
+where the flux-surface-averaged potential is, 
+\begin{equation}
+\langle \phi \rangle_{FS}=\frac{\pi^\frac{1}{4}  e^{-k_{\perp}^2/2}  \hat{g}_{0,k_z=0} }{\left[1- \Gamma_0(b) \right]}.
+\label{field_eqn}
+\end{equation}
+$\Gamma_0(x)=I_0(x)e^{-x}$, $I_0(x)$ is the zeroth order modified Bessel function, and $b_i=k^2_{\perp}$.
+
+It is also useful to have the expression for the nonlinearity in direct space so that this term can be treated numerically with pseudo-spectral methods:
+\begin{equation}
+\mathcal{N}[\hat{g}_{n}(x,y,z)]=\partial_y \bar{\phi} \partial_x g - \partial_x \bar{\phi} \partial_y g.
+\end{equation}
+
+%\noindent{\bf VII. $\Gamma_0=1$ Approximation }
+%
+%If we additionally set $\Gamma_0=1$ then we have,
+%\begin{eqnarray}
+%\mathcal{L}[\hat{g}_{n,k_z}]= -\tau \omega_n i k_y \hat{g}_{0,k_z}  \delta_{n,0}-2^{-\frac{1}{2}}\tau \omega_T i k_y \hat{g}_{0,k_z} \delta_{n,2}-  \tau i k_z  \hat{g}_{0,k_z} \delta_{n,1}\nonumber \\
+%- i k_z\left [\sqrt{n} \hat{g}_{n-1,k_z} + \sqrt{n+1}\hat{g}_{n+1,k_z} \right ]-\nu n \hat{g}_{n,k_z} %+C(\hat{g}_{n,k_z}),
+%\end{eqnarray}
+%and
+%\begin{equation}
+%\mathcal{N}[\hat{g}_{n,k_z}]=\tau \pi^{1/4} \sum_{k^{\prime}_z}\sum_{k^{\prime}_\perp}\left(k^{\prime}_x k_y - k_x k^{\prime}_y  \right ) \hat{g}_{0,k^{\prime}_\perp,k^{\prime}_z}\hat{g}_{n,k_\perp-k^{\prime}_\perp,k_z-k^{\prime}_z}.
+%\end{equation}
+%Where $\tau=\frac{T_{0e}}{T_{0i}}$, and the equation for the electrostatic potential is now incorporated into the above operators.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begingroup
+\let\clearpage\relax
+\renewcommand{\bibname}{Section References}
+
+\begin{thebibliography}{99}
+\vspace{-25pt}
+
+\bibitem{F_thesis} F. Merz, Ph.D. Thesis, Universit\"at M\"unster, (2008).
+
+\bibitem{alejandro} A. Banon Navarro, P. Morel, M. Albrecht-Marc, D. Carati, F. Merz, T. GÃ¶rler, and F. Jenko, Physics of Plasmas {\bf 18}, 092303 (2011). 
+
+\bibitem{watanabe04} T.-H. Watanabe and H. Sugama, Physics of Plasmas {\bf 11}, 1476 (2004).
+
+\bibitem{dorland} W. Dorland and G. W. Hammett, Phys. Fluids B {\bf 5}, 812.  
+
+\end{thebibliography}
+\endgroup
+
+\bigskip
+\titlerule \vspace{1pt} \titlerule
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Subroutines in file: ee\_performance.f90}
+
+This file houses the \texttt{performance} module that contains subroutines responsible for running various tests.
+
+\noindent The subroutines contained in this file and their main function are:
+
+\begin{itemize}
+\item \texttt{performance\_compute}: the main performance subroutine that calls all other subroutines depending on the logical performance switches selected.
+
+\item \texttt{performance\_linear}: linear performance test
+
+\item \texttt{performance\_nl}: nonlinear performance test
+
+\item \texttt{performance\_rhs}: rhs performance test
+
+\item \texttt{performance\_par}: parallelisation performance test
+
+\item \texttt{start\_clock}: starts a chronometer
+
+\item \texttt{end\_clock}: end a chronometer
+
+\end{itemize}
+
+\bigskip
+\titlerule \vspace{1pt} \titlerule
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

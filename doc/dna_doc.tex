@@ -1,0 +1,152 @@
+ \documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{amssymb}
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.0in
+\parindent = 0.4in
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+
+
+
+\begin{document}
+
+\baselineskip=24pt
+
+\begin{titlepage}
+
+\centerline{\bf \textsc{DNA} Code Documentation }
+
+
+\bigskip
+
+\medskip
+
+\baselineskip=24pt
+
+
+\noindent{\bf I. The `\texttt{physical\_parameters}' namelist}
+
+\begin{description}
+\item[\texttt{nu [real]:}] collision frequency (normalized to $v_{ti}/R$).
+\item[\texttt{omt [real]:}] temperature gradient scale length $R/L_{ti}$.
+\item[\texttt{omn [real]:}] density gradient scale length $R/L_n$.
+\item[\texttt{Ti0Te [real]:}] ratio of background ion to electron temperature.
+\end{description}
+
+\noindent{\bf II. The `\texttt{numerical\_parameters}' namelist}
+
+\begin{description}
+\item[\texttt{kxmin [real]:}] minimum radial wavenumber.
+\item[\texttt{kymin [real]:}] minimum binormal wavenumber.
+\item[\texttt{kzmin [real]:}] minimum parallel wavenumber.
+\item[\texttt{nkx0 [integer]:}] number of radial wavenumbers.  Note that the code directly calculates the wavenumbers $k_x=0$ through $k_{x,\textrm{max}}=$(\texttt{nkx0}$-1)\times$\texttt{kxmin}.  The negative $k_x$ modes are implicitly defined via the reality constraint.  
+\item[\texttt{nky0 [integer]:}] number of binormal wavenumbers, including positive and negative wavenumbers.
+\item[\texttt{nkz0 [integer]:}] number of parallel wavenumbers, including positive and negative wavenumbers.
+\item[\texttt{nv0 [integer]:}] number of Hermite polynomials.
+\item[\texttt{hyp\_x [real]:}] prefactor for radial hyperdiffusion.
+\item[\texttt{hyp\_y [real]:}] prefactor for binormal hyperdiffusion.
+\item[\texttt{hyp\_z [real]:}] prefactor for parallel hyperdiffusion.
+\item[\texttt{hyp\_v [real]:}] prefactor for hyper-collisions.
+\item[\texttt{hypx\_order [integer]:}] order of radial hyperdiffusion.
+\item[\texttt{hypy\_order [integer]:}] order of binormal hyperdiffusion.
+\item[\texttt{hypz\_order [integer]:}] order of parallel hyperdiffusion.
+\item[\texttt{hypv\_order [integer]:}] order of hyper-collisions.
+\item[\texttt{hyp\_conv [real]:}] prefactor for a Krook-like term acting on the $k_z=0$, $n=0$ part of the distribution function (where $n$ is the Hermite number).  The net prefactor is \texttt{hyp\_conv}$\times$\texttt{nu}, so that setting this equal to one extends the minimum collisionality to $k_z=0$, $n=0$.  This part of the distribution function is otherwise often subject to slow growth over the course of a simulation.   
+\item[\texttt{num\_v\_procs [integer]:}] number of processors.  Note that the code is only parallelized over the Hermite coordinate at this time.
+\item[\texttt{courant [real]:}] courant factor for the nonlinear time step adaptation.
+\end{description}
+
+\noindent{\bf III. The `\texttt{diagnostics}' namelist}
+
+\begin{description}
+\item[\texttt{diagdir [character]:}] output directory.
+\item[\texttt{istep\_ffm [integer]:}] parameter defining how frequently to activate diagnostics calculating $\phi^2$ and the heat flux summed over all coordinates.  This data is output to the file `ffm.dat.'  As with all of the following `\texttt{istep}' parameters, the diagnostic is activated every \texttt{istep}-th time step.
+\item[\texttt{istep\_energy3d [integer]:}] parameter defining how frequently to activate diagnostics calculating the three dimensional free energy, energy drive, collisional dissipation and any dissipation from artificial hyperdiffusion.  This data is output to the file `energy3d.dat.'  
+\item[\texttt{istep\_energy [integer]:}] parameter defining how frequently to activate diagnostics calculating the total value of various energy-related quantities--1. the `entropy' part of the free energy, 2. the electrostatic part of the free energy, 3. total RHS of the free energy evolution equation, 4. free energy drive, 5. collisional dissipation, 6. hyper-collisional dissipation, 7. dissipation via other artificial hyperdiffusion, 8. nonlinear contribution to the energy equation (should be extremely small), 9. calculated time derivative of the free energy.  This data is output to the file `energy3d.dat.'  
+\item[\texttt{istep\_hermite [integer]:}] parameter defining how frequently to activate diagnostics calculating the free energy as a function of Hermite polynomial, summed over all spatial coordinates.  This data is output to the file `energy\_hermite.dat.'  
+\item[\texttt{istep\_gout [integer]:}] parameter defining how frequently to output the entire distribution function.  This data is output to the file `gout.dat.'  
+\item[\texttt{istep\_nlt [integer]:}] parameter defining how frequently to activate nonlinear energy transfer diagnostics.    
+\item[\texttt{istep\_eshells [integer]:}] parameter defining how frequently to activate energy diagnostics formulated in terms of $k_\perp$ shells.    
+\item[\texttt{min\_shell\_width [integer]:}] parameter for determining the $k_\perp$ shells.
+\item[\texttt{istep\_real [integer]:}] parameter defining how frequently to enforce the reality constraint on $k_x=0$ modes.    
+\item[\texttt{istep\_fmom3d [integer]:}] parameter defining how frequently to activate diagnostics calculating the three dimensional electrostatic potential and pressure fluctuations.  This data is output to the file `fmom3d.dat.'
+\item[\texttt{istep\_gamma [integer]:}] parameter defining how frequently to calculate the growth rate for linear initial-value simulations.  
+\item[\texttt{istep\_schpt [integer]:}] parameter defining how frequently to write a security checkpoint in case the simulation stops unexpectedly.
+\item[\texttt{output\_nlt\_n [integer]:}] flag for calculating nonlinear transfer functions for various Hermite polynomials.
+\item[\texttt{istep\_gk [integer]:}] parameter defining how frequently to output the distribution function for certain wavenumbers.  This is useful if memory constraints limit the frequency at which the entire distribution function can be output.    
+\item[\texttt{gk\_ky\_index [integer]:}] index defining the $k_y$ mode for a $k_z$ scan associated with \texttt{istep\_gk}.
+\item[\texttt{gk\_kz\_index [integer]:}] index defining the $k_z$ mode for a $k_y$ scan associated with \texttt{istep\_gk}.
+\end{description}
+
+
+\noindent{\bf IV. The `\texttt{flags}' namelist}
+
+\begin{description}
+\item[\texttt{nonlinear [logical]:}] `T' denotes a nonlinear simulation.
+\item[\texttt{calc\_dt [logical]:}] `T' activates calculation of the initial time step.  Otherwise \texttt{dt\_max} must be set.
+\item[\texttt{comp\_type [character]:}] `IV' activates initial value computation, 'EV' activates eigenvalue computation.  
+\item[\texttt{checkpoint\_read [logical]:}] `T' activates a checkpoint read as an initial condition in case of restarts.  Additional data output will be appended to existing files.  
+\item[\texttt{etg\_factor [real]:}] factor determining the adiabatic response for $k_y=0$ modes.  \texttt{etg\_factor}=0.0 defines to an `ETG' simulation, and \texttt{etg\_factor}=1.0 defines to an `ITG' simulation. 
+\end{description}
+
+\noindent{\bf V. The `\texttt{eigensolve}' namelist}
+
+\begin{description}
+\item[\texttt{n\_ev [logical]:}] number of eigenvalues to solve for (maximum is \texttt{nv0}).
+\item[\texttt{left\_ev [logical]:}] `T' activates calculation of the left eigenvectors.
+\item[\texttt{kxmax0 [real]:}] maximum $k_x$ wavenumber.  Whatever is input is overwritten and the correct value is output in the resulting parameters.dat file.  This is then used in post-processing diagnostics.
+\item[\texttt{kymax0 [real]:}] maximum $k_y$ wavenumber (not including the Nyquist wavenumber).  Whatever is input is overwritten and the correct value is output in the resulting parameters.dat file.  This is then used in post-processing diagnostics.
+\item[\texttt{kzmax0 [real]:}] maximum $k_z$ wavenumber (not including the Nyquist wavenumber).  Whatever is input is overwritten and the correct value is output in the resulting parameters.dat file.  This is then used in post-processing diagnostics.
+\end{description}
+
+\noindent{\bf VI. The `\texttt{initial\_value}' namelist}
+
+\begin{description}
+\item[\texttt{max\_itime [integer]:}] maximum number of time steps before termination of the simulation. 
+\item[\texttt{max\_walltime [integer]:}] maximum walltime before termination of the simulation.  
+\item[\texttt{max\_time [real]:}] maximum time in $R/v_{ti}$ before termination of the simulation.   
+\item[\texttt{dt\_max [real]:}] initial time step.  The time step will be calculated automatically if \texttt{calc\_dt}$=$T, and will be automatically adapted in the nonlinear regime.    
+\end{description}
+
+\end{titlepage}
+
+\setcounter{page}{2}
+
+%\begin{thebibliography}{99}
+
+%\bibitem{reference} Add references.
+
+
+%\end{thebibliography}
+
+%\newpage
+
+
+%\clearpage
+%\newpage
+%\begin{figure}
+%\includegraphics[width=15.0cm]{ky_combo.ps}
+%\caption{}
+%\label{figure:ky_combo}
+%\end{figure}
+
+
+
+
+
+
+\end{document}

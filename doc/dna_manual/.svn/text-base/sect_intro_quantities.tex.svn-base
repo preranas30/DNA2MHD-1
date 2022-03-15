@@ -1,0 +1,102 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Quantities of interest}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Heat Flux }
+The heat flux is the spatial average of the radial $E\times B$ advection of the pressure fluctuation,
+\begin{equation}
+Q\equiv \langle \tilde{p} \tilde{v}_{E,r} \rangle= -\frac{\int dx dy dz \left ( \tilde{p}\partial_y \bar{\phi}/B_0 \right ) }{ L_x L_y L_z}.
+\end{equation}
+This can be transformed into Fourier space using Parseval's theorem,
+\begin{equation}
+Q=-\sum_{k_x,k_y,k_z} \tilde{p}^* i k_y  e^{-k_{\perp}^2/2} \phi/B_0 .
+\end{equation}
+The pressure fluctuation must also be transformed into the Hermite representation:
+\begin{equation}
+\tilde{p}\equiv \int dv v^2 g = \frac{\pi^{1/4}}{\sqrt{2}}\hat{g}_2 + \frac{\pi^{1/4}}{2}\hat{g}_0.
+\end{equation}
+The $\hat{g}_0$ component drops out of the $\vec{k}$ sum for the heat flux so that the final expression is,
+\begin{equation}
+Q=-\frac{\pi^{1/4}}{\sqrt{2}B_0}\sum_{k_x,k_y,k_z} i k_y  e^{-k_{\perp}^2/2} \phi \hat{g}^*_2.
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Energetics }
+
+The energy equation for this system can be derived (in analogy with the energetics~\cite{alejandro} for the gyrokinetic equations) by operating with, 
+\begin{equation}
+E[X]\equiv Re \left [ \int^\infty_{-\infty} \left ( \frac{g}{F_0} + e^{-k^2_\perp/2}\phi \right )^* X dv \right ].
+\end{equation}
+In the remainder of this section the notation signifying the real part of the expression will be suppressed.
+
+This can be applied in the Hermite representation by noting that,
+\begin{equation}
+\int^\infty_{-\infty} \left ( \frac{g}{F_0} + e^{-k^2_\perp/2}\phi \right )^* f dv= \sum_n \left ( \pi^{1/2} \hat{g}_n+\pi^{1/4} e^{-k^2_\perp/2}\phi \delta_{n,0} \right )^* f_n, 
+\end{equation}
+where the Hermite expansions of $g$ and $f$ are as follows, 
+\begin{equation}
+g(v)=\sum^\infty_{n=0} \hat{g}_n H_n(v)e^{-v^2}.
+\end{equation}
+Operating on the distribution function produces the energy quantity,
+\begin{equation}
+E= \frac{1}{2}\sum_n \left | \hat{g}_n \right |^2 \pi^{1/2} +  \frac{1}{2}\phi^* e^{-k^2_\perp/2}\hat{g}_0 \pi^{1/4},
+\end{equation}
+which for $k_y\neq 0$ reduces to,
+\begin{equation}
+E= \frac{1}{2}\sum_n \left | \hat{g}_n \right |^2 \pi^{1/2} +  \frac{1}{2}D(k_{\perp}^2) \left | \phi \right |^2,
+\end{equation}
+where $D(k_{\perp}^2)=\frac{1}{\tau+1-\Gamma_0(b)}$.
+The energy evolution equation is produced by operating on each term on the RHS of Eq.~\ref{linop_final} as will be outlined below.  By summing over all $\vec{k}$, one can extract the non-vanishing terms which define the sources and sinks of the system.
+
+The density gradient, $\omega_n$, term in the energy equation is proportional to $i k_y \hat{g}_0 \phi$.  Since $\hat{g}_0$ is proportional to $\phi$, this term drops out when summed over $\vec{k}$ due to the reality constraint.  %The exception is at $k_y=0$ where the flux-surface-averaged potential enters the equations and the remaining contribution is, $-\omega_n i k_y \hat{g}^*_0 D(k^2_{\perp})\frac{T_{0i}}{T_{0e}}\langle \phi \rangle_{FS} \delta_{k_y,0}$.  
+
+The temperature gradient term produces the energy drive,
+\begin{equation}
+Q=-\frac{\pi^{1/4}}{\sqrt{2}} \omega_T i k_y e^{-k^2_\perp/2}\hat{g}^*_2 \phi.
+\end{equation}
+
+The parallel electric field has two terms--one proportional to $i k_z | \phi |^2$ which vanishes when summed over $\vec{k}$ and another term,
+\begin{equation}
+-\pi^{1/4} i k_z \hat{g}^*_1 e^{-k^2_\perp/2}\phi,
+\label{cancel_E||}
+\end{equation}
+which will be shown to cancel with quantities in the phase-mixing term.
+
+The phase mixing term produces two results, $-i k_z \pi^{1/4} e^{-k^2_\perp/2}\phi^* \hat{g}_1$, which cancels with the term in expression~\ref{cancel_E||}, and additional terms,
+\begin{equation}
+\sum_n \pi^{1/2} (-i k_z) \left [ \sqrt{n} \hat{g}^*_n \hat{g}_{n-1} + \sqrt{n+1} \hat{g}^*_n \hat{g}_{n+1} \right ],
+\label{phase_mixing}
+\end{equation}
+which cancel in the sum over $n$.
+This cancellation can be seen, e.g., by considering the expressions in~\ref{phase_mixing} for $n=m-1$ and $n=m$.  The $\sqrt{n+1} \hat{g}^*_n \hat{g}_{n+1}$ term for $n=m-1$ cancels exactly with the $\hat{g}^*_n \hat{g}_{n-1}$ term for $n=m$.  In other words, the phase-mixing term transfers energy in a conservative linear cascade through velocity space.  Numerically this is violated only at $n=n_{max}$ where the Hermite representation is truncated and thus well-behaved energetics is only expected with sufficient velocity space resolution. 
+
+Finally, the collision term provides the energy sink of the system,
+\begin{equation}
+C= -\pi^{1/2} \sum_n \nu n \left | \hat{g}_n \right |^2. 
+\end{equation}
+
+The final energy equation is,
+\begin{equation}
+\frac{\partial E}{\partial t}=\sum_{\vec{k}} [  \frac{\pi^{1/4}}{\sqrt{2}} \omega_T i k_y e^{-k^2_\perp/2}\hat{g}^*_2 \phi  - \pi^{1/2}\sum_n \nu n \left | \hat{g}_n \right |^2    ].
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Nonlinear Energy Transfer }
+
+Fill in some explanation:
+\begin{equation}
+T_{n,k,k'}=-\pi^{1/2}(k_x' k_y-k_xk_y')\hat{g}_{n,k}^*\bar{\phi}_{k-k'}\hat{g}_{n,k'}
+\end{equation}
+\begin{equation}
+T_{\phi,k,k'}=\pi^{1/4}(k_x' k_y-k_xk_y')\bar{\phi}_{k}^*\bar{\phi}_{k'}\hat{g}_{0,k-k'}
+\end{equation}
+
+\bigskip
+\titlerule \vspace{1pt} \titlerule
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
