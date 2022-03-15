@@ -27,4 +27,6 @@ cc_par_mod.f90. This has definitions of parameters. Adapt to suit new code.
 cc_time_advance.f90. This has the runge-kutta time stepper. Keep mostly intact.
 
 Main modification that is needed:
-I would recommend getting rid of phi everywhere. The g variables have been for the distribution function in Hermite space. I would recommend hard wiring this to contain the six (correct?) fields needed for the 2 fluid equations (three components of v and three components of B).
+I would recommend getting rid of phi everywhere. 
+The g variables have been for the distribution function in Hermite space. 
+I would recommend hard wiring this to contain the six (correct?) fields needed for the 2 fluid equations (three components of v and three components of B).
