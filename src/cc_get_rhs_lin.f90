@@ -44,7 +44,7 @@ SUBROUTINE get_rhs_lin(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
 
 
  COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
- COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
+ COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)             ! THESE SHOULD NOT BE 0:3 RATHER 0:2 AS 0=X, 1=Y AND 2=Z.
  COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
  COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
  COMPLEX, INTENT(out) :: rhs_out_v(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
@@ -59,7 +59,7 @@ SUBROUTINE get_rhs_lin(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
    !If works for mu integrated as well for hankel/vperp version
    CALL get_rhs_lin1_ae(g_in,g_bounds,phi_in,rhs_out,which_term)
  ELSE IF(rhs_lin_version==2) THEN
-   !CALL get_rhs_lin2(g_in,g_bounds,phi_in,rhs_out,which_term)
+!CALL get_rhs_lin2(g_in,g_bounds,phi_in,rhs_out,which_term)
    STOP 'get_rhs_lin2 needs to be benchmarked and updated to 6D g.'
  END IF
  
@@ -67,8 +67,8 @@ END SUBROUTINE get_rhs_lin
 
 SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
 
- COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
- COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)   
+ COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)    ! IT SHOULD BE 0:2, All the way 
  COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
  COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
  COMPLEX, INTENT(out) :: rhs_out_v(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
@@ -119,6 +119,9 @@ SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
  DO i=0,nkx0-1
    DO j=0,nky0-1
      DO k=lkz1,lkz2
+     
+    
+
         rhs_out_b(i,j,k,0) = i_complex*kzgrid(k)*v_in(i,j,k,0) + i_complex*kygrid(j)*b_in(i,j,k,2) -i_complex*kzgrid(k)*b_in(i,j,k,1)
         rhs_out_b(i,j,k,1) = i_complex*kzgrid(k)*v_in(i,j,k,1) + i_complex*kzgrid(k)*b_in(i,j,k,0) -i_complex*kxgrid(i)*b_in(i,j,k,2)
         rhs_out_b(i,j,k,2) = i_complex*kzgrid(k)*v_in(i,j,k,2) + i_complex*kxgrid(i)*b_in(i,j,k,1) -i_complex*kygrid(y)*b_in(i,j,k,0)
@@ -127,7 +130,7 @@ SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
         rhs_out_v(i,j,k,1) = i_complex*kzgrid(k)*b_in(i,j,k,1)
         rhs_out_v(i,j,k,2) = i_complex*kzgrid(k)*b_in(i,j,k,2)
 
-!       !IF(mype==0.and.verbose) WRITE(*,*) "kxgrid(i),kygrid(j),kzgrid(k)",kxgrid(i),kygrid(j),kzgrid(k)
+!        !IF(mype==0.and.verbose) WRITE(*,*) "kxgrid(i),kygrid(j),kzgrid(k)",kxgrid(i),kygrid(j),kzgrid(k)
 !       !IF(mype==0.and.verbose) WRITE(*,*) "kxmax_hyp,kymax_hyp,kzmax_hyp",kxmax_hyp,kymax_hyp,kzmax_hyp
 !       DO l=lv1,lv2
 !        DO h = lh1,lh2
