@@ -57,7 +57,7 @@ SUBROUTINE get_rhs_lin(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
 
  IF(rhs_lin_version==1) THEN
    !If works for mu integrated as well for hankel/vperp version
-   CALL get_rhs_lin1_ae(g_in,g_bounds,phi_in,rhs_out,which_term)
+  CALL get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
  ELSE IF(rhs_lin_version==2) THEN
    !CALL get_rhs_lin2(g_in,g_bounds,phi_in,rhs_out,which_term)
    STOP 'get_rhs_lin2 needs to be benchmarked and updated to 6D g.'
@@ -113,7 +113,8 @@ SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
    IF((2.ge.lv1).and.(2.le.lv2)) phi_mod2=g_in(0,0,0,2,0,0)/g0_bcast
  END IF
 
- rhs_out=cmplx(0.0,0.0)
+ rhs_out_b=cmplx(0.0,0.0)
+ rhs_out_v=cmplx(0.0,0.0)
 
  !IF(verbose.and.mype==0) WRITE(*,*) "get_rhs_lin1", 68
  DO i=0,nkx0-1
