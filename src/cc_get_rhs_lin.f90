@@ -23,7 +23,7 @@ MODULE linear_rhs
   USE flr_effects
   USE hk_effects
 
-  PUBLIC :: get_rhs_lin,get_rhs_lin2,get_v_boundaries,get_v_boundaries2
+  PUBLIC :: get_rhs_lin,get_rhs_lin2 !,get_v_boundaries,get_v_boundaries2
 
 
   CONTAINS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
@@ -43,7 +43,7 @@ SUBROUTINE get_rhs_lin(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
 ! INTEGER, INTENT(in) :: which_term
 
 
- COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
+ !COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
  COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
  COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
  COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2, 0:3)
@@ -51,13 +51,13 @@ SUBROUTINE get_rhs_lin(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
  INTEGER, INTENT(in) :: which_term
 
 
- IF(np_herm.gt.1) THEN
-    CALL get_v_boundaries2(g_in,g_bounds)
- END IF
+! IF(np_herm.gt.1) THEN
+!    CALL get_v_boundaries2(g_in,g_bounds)
+! END IF
 
  IF(rhs_lin_version==1) THEN
    !If works for mu integrated as well for hankel/vperp version
-   CALL get_rhs_lin1_ae(g_in,g_bounds,phi_in,rhs_out,which_term)
+   CALL get_rhs_lin1_ae(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
  ELSE IF(rhs_lin_version==2) THEN
    !CALL get_rhs_lin2(g_in,g_bounds,phi_in,rhs_out,which_term)
    STOP 'get_rhs_lin2 needs to be benchmarked and updated to 6D g.'
@@ -65,9 +65,9 @@ SUBROUTINE get_rhs_lin(b_in, v_in, rhs_out_b, rhs_out_v, which_term)
  
 END SUBROUTINE get_rhs_lin
 
-SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
+SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v, which_term)
 
- COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
+! COMPLEX, INTENT(in) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
  COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
  COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
  COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
@@ -92,28 +92,27 @@ SUBROUTINE get_rhs_lin1_ae(b_in, v_in, rhs_out_b,rhs_out_v,g_bounds,which_term)
  !which_term=9:  Phase mixing n+1
  !which_term=10:  hyp_conv
 
- !for transpose for left ev's
- grad1_flag=1
- grad2_flag=2
- phi_mod1=cmplx(1.0,0.0)
- phi_mod2=cmplx(1.0,0.0)
+!  !for transpose for left ev's
+!  grad1_flag=1
+!  grad2_flag=2
+!  phi_mod1=cmplx(1.0,0.0)
+!  phi_mod2=cmplx(1.0,0.0)
+! 
+!  !IF(verbose.and.mype==0) WRITE(*,*) "get_rhs_lin1", 55
+!  !IF(verbose.and.mype==0) WRITE(*,*) "nkx0,nky0,nkz0",nkx0,nky0,nkz0
+!  IF(left_ev) THEN
+!    !The matrix is symmetric with the exception of these two terms
+!    grad1_flag=0
+!    grad2_flag=0
+!    g0_bcast=v_in(0,0,0)
+!    CALL MPI_BCAST(g0_bcast,1,MPI_DOUBLE_COMPLEX,0,MPI_COMM_WORLD,ierr) 
+!    !WRITE(*,*) "!!!g0_bcast",g0_bcast
+!    IF((1.ge.lv1).and.(1.le.lv2)) phi_mod1=g_in(0,0,0,1,0,0)/g0_bcast
+!    IF((2.ge.lv1).and.(2.le.lv2)) phi_mod2=g_in(0,0,0,2,0,0)/g0_bcast
+!  END IF
 
- !IF(verbose.and.mype==0) WRITE(*,*) "get_rhs_lin1", 55
- !IF(verbose.and.mype==0) WRITE(*,*) "nkx0,nky0,nkz0",nkx0,nky0,nkz0
- IF(left_ev) THEN
-   !The matrix is symmetric with the exception of these two terms
-   grad1_flag=0
-   grad2_flag=0
-   b0_bcast=b_in(0,0,0)
-   v0_bcast=v_in(0,0,0)
-   CALL MPI_BCAST(b0_bcast,1,MPI_DOUBLE_COMPLEX,0,MPI_COMM_WORLD,ierr) 
-   CALL MPI_BCAST(v0_bcast,1,MPI_DOUBLE_COMPLEX,0,MPI_COMM_WORLD,ierr) 
-   !WRITE(*,*) "!!!g0_bcast",g0_bcast
-   IF((1.ge.lv1).and.(1.le.lv2)) phi_mod1=g_in(0,0,0,1,0,0)/g0_bcast
-   IF((2.ge.lv1).and.(2.le.lv2)) phi_mod2=g_in(0,0,0,2,0,0)/g0_bcast
- END IF
-
- rhs_out=cmplx(0.0,0.0)
+ rhs_out_b=cmplx(0.0,0.0)
+ rhs_out_v=cmplx(0.0,0.0)
 
  !IF(verbose.and.mype==0) WRITE(*,*) "get_rhs_lin1", 68
  DO i=0,nkx0-1
@@ -414,45 +413,45 @@ END SUBROUTINE get_rhs_lin1_ae
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!                               get_v_boundaries2                           !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SUBROUTINE get_v_boundaries2(g_in,g_bounds)
-  USE par_mod
-  USE mpi
-
-  COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
-  COMPLEX, INTENT(out) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
-  INTEGER :: p,send_proc,recv_proc,ierr
-  COMPLEX :: send_arr(0:nkx0-1,0:nky0-1,lkz1:lkz2)
-  COMPLEX :: recv_arr(0:nkx0-1,0:nky0-1,lkz1:lkz2)
-  INTEGER :: stat(MPI_STATUS_SIZE)
-  INTEGER :: h
-
-  IF(verbose) write(*,*) "In get_v_boundaries2",mype
-  !fill lower boundaries
-
-  DO h=lh1,lh2
-    IF(mype_herm==0) CALL MPI_Send(g_in(0,0,0,lv2,h,0), nkx0*nky0*lkz0, &
-                        MPI_DOUBLE_COMPLEX, 1, 0, mpi_comm_herm, ierr)  
-    IF(mype_herm.ne.0.and.mype_herm.ne.np_herm-1) THEN
-        CALL MPI_SENDRECV(g_in(0,0,0,lv2,h,0), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm+1,0,&
-                    g_bounds(0,0,0,h,1), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm-1,0,&
-                    mpi_comm_herm, stat, ierr )
-    END IF
-    IF(mype_herm==np_herm-1) CALL MPI_Recv(g_bounds(0,0,0,h,1), nkx0*nky0*lkz0, &
-                        MPI_DOUBLE_COMPLEX, np_herm-2, 0, mpi_comm_herm, stat, ierr )  
-
-    !fill upper boundaries
-    IF(mype_herm==np_herm-1) CALL MPI_Send(g_in(0,0,0,lv1,h,0), nkx0*nky0*lkz0, &
-                       MPI_DOUBLE_COMPLEX, np_herm-2, 0, mpi_comm_herm, ierr)  
-    IF(mype_herm.ne.0.and.mype_herm.ne.np_herm-1) THEN
-        CALL MPI_SENDRECV(g_in(0,0,0,lv1,h,0), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm-1,0,&
-                    g_bounds(0,0,0,h,2), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm+1,0,&
-                    mpi_comm_herm, stat, ierr )
-    END IF
-    IF(mype_herm==0) CALL MPI_Recv(g_bounds(0,0,0,h,2), nkx0*nky0*lkz0, &
-                       MPI_DOUBLE_COMPLEX, 1, 0, mpi_comm_herm, stat, ierr )  
-  END DO
-  CALL MPI_BARRIER(MPI_COMM_WORLD,ierr)
-
-END SUBROUTINE get_v_boundaries2
+! SUBROUTINE get_v_boundaries2(g_in,g_bounds)
+!   USE par_mod
+!   USE mpi
+! 
+!   COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
+!   COMPLEX, INTENT(out) :: g_bounds(0:nkx0-1,0:nky0-1,lkz1:lkz2,lh1:lh2,2)
+!   INTEGER :: p,send_proc,recv_proc,ierr
+!   COMPLEX :: send_arr(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+!   COMPLEX :: recv_arr(0:nkx0-1,0:nky0-1,lkz1:lkz2)
+!   INTEGER :: stat(MPI_STATUS_SIZE)
+!   INTEGER :: h
+! 
+!   IF(verbose) write(*,*) "In get_v_boundaries2",mype
+!   !fill lower boundaries
+! 
+!   DO h=lh1,lh2
+!     IF(mype_herm==0) CALL MPI_Send(g_in(0,0,0,lv2,h,0), nkx0*nky0*lkz0, &
+!                         MPI_DOUBLE_COMPLEX, 1, 0, mpi_comm_herm, ierr)  
+!     IF(mype_herm.ne.0.and.mype_herm.ne.np_herm-1) THEN
+!         CALL MPI_SENDRECV(g_in(0,0,0,lv2,h,0), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm+1,0,&
+!                     g_bounds(0,0,0,h,1), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm-1,0,&
+!                     mpi_comm_herm, stat, ierr )
+!     END IF
+!     IF(mype_herm==np_herm-1) CALL MPI_Recv(g_bounds(0,0,0,h,1), nkx0*nky0*lkz0, &
+!                         MPI_DOUBLE_COMPLEX, np_herm-2, 0, mpi_comm_herm, stat, ierr )  
+! 
+!     !fill upper boundaries
+!     IF(mype_herm==np_herm-1) CALL MPI_Send(g_in(0,0,0,lv1,h,0), nkx0*nky0*lkz0, &
+!                        MPI_DOUBLE_COMPLEX, np_herm-2, 0, mpi_comm_herm, ierr)  
+!     IF(mype_herm.ne.0.and.mype_herm.ne.np_herm-1) THEN
+!         CALL MPI_SENDRECV(g_in(0,0,0,lv1,h,0), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm-1,0,&
+!                     g_bounds(0,0,0,h,2), nkx0*nky0*lkz0, MPI_DOUBLE_COMPLEX,mype_herm+1,0,&
+!                     mpi_comm_herm, stat, ierr )
+!     END IF
+!     IF(mype_herm==0) CALL MPI_Recv(g_bounds(0,0,0,h,2), nkx0*nky0*lkz0, &
+!                        MPI_DOUBLE_COMPLEX, 1, 0, mpi_comm_herm, stat, ierr )  
+!   END DO
+!   CALL MPI_BARRIER(MPI_COMM_WORLD,ierr)
+! 
+! END SUBROUTINE get_v_boundaries2
 
 END MODULE linear_rhs

@@ -31,7 +31,8 @@ MODULE time_advance
   
   PRIVATE
 
-  COMPLEX, ALLOCATABLE, DIMENSION(:,:,:,:,:,:) :: g_2,k1,k2
+!  COMPLEX, ALLOCATABLE, DIMENSION(:,:,:,:,:,:) :: g_2,k1,k2
+  COMPLEX, ALLOCATABLE, DIMENSION(:,:,:,:) :: b_2, bk1, bk2, v_2, vk1, vk2
 
   CONTAINS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
   
@@ -54,7 +55,7 @@ SUBROUTINE iv_solver
    IF(verbose) WRITE(*,*) "Done with diagnostics",time,itime,mype
 
    IF(verbose) WRITE(*,*) "iv_solver: before get_g_next",time,itime,mype
-   CALL get_g_next(g_1)
+   CALL get_g_next(b_1, v_1)
    itime=itime+1 
    IF(mype==0.and.verbose) WRITE(*,*) "itime:",itime
    time=time+dt
@@ -76,7 +77,7 @@ END SUBROUTINE iv_solver
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!                                get_g_next                                 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SUBROUTINE get_g_next(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz)
+SUBROUTINE get_g_next(b_in, v_in)
 
 ! COMPLEX, INTENT(inout) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
  COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)

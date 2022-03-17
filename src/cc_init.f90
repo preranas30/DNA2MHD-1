@@ -142,8 +142,12 @@ SUBROUTINE arrays
   ev_size_loc=lxyzvhs0
   ev_size=lxyzvhs0*np_herm*np_hank*np_kz*np_spec
   
-  IF(.not.allocated(g_1))&
-      ALLOCATE(g_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)) 
+!  IF(.not.allocated(g_1))&
+!      ALLOCATE(g_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)) 
+  IF(.not.allocated(b_1))&
+      ALLOCATE(b_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)) 
+  IF(.not.allocated(v_1))&
+      ALLOCATE(v_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)) 
   IF(.not.allocated(kxgrid)) ALLOCATE(kxgrid(0:nkx0-1))
   IF(.not.allocated(kygrid)) ALLOCATE(kygrid(0:nky0-1))
   IF(spatial2d) THEN
@@ -337,8 +341,12 @@ SUBROUTINE arrays_temp
   ev_size_loc=lxyzvhs0
   ev_size=lxyzvhs0*np_herm*np_hank*np_kz*np_spec
   
-  IF(.not.allocated(g_1))&
-      ALLOCATE(g_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)) 
+!  IF(.not.allocated(g_1))&
+!      ALLOCATE(g_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)) 
+  IF(.not.allocated(b_1))&
+      ALLOCATE(b_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)) 
+  IF(.not.allocated(v_1))&
+      ALLOCATE(v_1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)) 
   IF(.not.allocated(kxgrid)) ALLOCATE(kxgrid(0:nkx0-1))
   IF(.not.allocated(kygrid)) ALLOCATE(kygrid(0:nky0-1))
   IF(spatial2d) THEN
@@ -468,7 +476,9 @@ END SUBROUTINE arrays_temp
 SUBROUTINE finalize_arrays
   USE par_mod
 
-  IF(allocated(g_1)) DEALLOCATE(g_1)
+!  IF(allocated(g_1)) DEALLOCATE(g_1)
+  IF(allocated(b_1)) DEALLOCATE(b_1)
+  IF(allocated(v_1)) DEALLOCATE(v_1)
 
   IF(allocated(kxgrid)) DEALLOCATE(kxgrid)
   IF(allocated(kygrid)) DEALLOCATE(kygrid)

@@ -216,22 +216,23 @@ END SUBROUTINE initialize_fourier_ae_mu0_2d
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!                                   get_rhs_nl                              !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SUBROUTINE get_rhs_nl(g_in,phi_in,rhs_out)
+SUBROUTINE get_rhs_nl(b_in, v_in, rhs_out_b, rhs_out_v)
   USE par_mod
   include 'fftw3.f'
 
-  COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
-  COMPLEX, INTENT(inout) :: phi_in(0:nkx0-1,0:nky0-1,lkz1:lkz2)
-  COMPLEX, INTENT(inout) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
+  COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+  COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+  COMPLEX, INTENT(inout) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+  COMPLEX, INTENT(inout) :: rhs_out_v(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
 
   IF(rhs_nl_version==1) THEN
-    CALL get_rhs_nl1(g_in,phi_in,rhs_out)
+    CALL get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
   ELSE IF(rhs_nl_version==2) THEN
-    CALL get_rhs_nl2(g_in,phi_in,rhs_out)
+    CALL get_rhs_nl2(b_in,v_in,rhs_out_b,rhs_out_v)
   ELSE IF(rhs_nl_version==3) THEN
-    CALL get_rhs_nl3(g_in,phi_in,rhs_out)
+    CALL get_rhs_nl3(b_in,v_in,rhs_out_b,rhs_out_v)
   ELSE IF(rhs_nl_version==4) THEN
-    CALL get_rhs_nl4(g_in,phi_in,rhs_out)
+    CALL get_rhs_nl4(b_in,v_in,rhs_out_b,rhs_out_v)
   END IF
  
 END SUBROUTINE get_rhs_nl
@@ -478,15 +479,15 @@ END SUBROUTINE get_rhs_nl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!                                 get_rhs_nl1                               !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-SUBROUTINE get_rhs_nl1(g_in,phi_in0,rhs_out)
+SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
 
   USE par_mod
   include 'fftw3.f'
 
-  COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
-  COMPLEX, INTENT(in) :: phi_in0(0:nkx0-1,0:nky0-1,lkz1:lkz2)
-  COMPLEX :: phi_in(0:nkx0-1,0:nky0-1,lkz1:lkz2)
-  COMPLEX, INTENT(inout) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
+  COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+  COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+  COMPLEX, INTENT(inout) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+  COMPLEX, INTENT(inout) :: rhs_out_v(0:nkx0-1,0:nky0-1,0:3)
   !COMPLEX :: temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1)
   !COMPLEX :: temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1)
   !REAL :: dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
@@ -694,7 +695,7 @@ END SUBROUTINE get_rhs_nl1
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !This is the fastest version
 !Note: only for np_kz=1
-SUBROUTINE get_rhs_nl2(g_in,phi_in0,rhs_out)
+SUBROUTINE get_rhs_nl2(b_in,v_in,rhs_out_b,rhs_out_v)
   USE par_mod
   IMPLICIT NONE
   include 'fftw3.f'

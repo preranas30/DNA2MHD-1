@@ -113,7 +113,8 @@ MODULE par_mod
 
   LOGICAL :: calc_dt=.false.        !Automatic initial time step calculation
   LOGICAL :: dt_slepc=.false.        !Use slepc or lapack
-  LOGICAL :: adapt_dt_nl=.true.     !Adapt time step in nonlinear sims
+!  LOGICAL :: adapt_dt_nl=.true.     !Adapt time step in nonlinear sims
+  LOGICAL :: adapt_dt_nl=.false.     !FALSE for dna2mhd initially
   LOGICAL :: verbose=.false.        !Extra output
   LOGICAL :: checkpoint_read=.false. !READ checkpoint for restart
   LOGICAL :: checkpoint_write=.true.
