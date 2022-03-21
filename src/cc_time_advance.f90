@@ -80,17 +80,17 @@ END SUBROUTINE iv_solver
 SUBROUTINE get_g_next(b_in, v_in)
 
 ! COMPLEX, INTENT(inout) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
- COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
- COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
+ COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
  
  
- ALLOCATE(b_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
- ALLOCATE(bk1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
- ALLOCATE(bk2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+ ALLOCATE(b_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
+ ALLOCATE(bk1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
+ ALLOCATE(bk2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
 
- ALLOCATE(v_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
- ALLOCATE(vk1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
- ALLOCATE(vk2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3))
+ ALLOCATE(v_2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
+ ALLOCATE(vk1(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
+ ALLOCATE(vk2(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
 
 !  !4th order Runge-Kutta
 !  first_stage=.true.
@@ -175,11 +175,11 @@ END SUBROUTINE get_g_next
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 SUBROUTINE get_rhs(b_inx, b_iny, b_inz, v_inx, v_iny, v_inz,rhs_out_bx, rhs_out_by, rhs_out_bz,rhs_out_vx, rhs_out_vy, rhs_out_vz,0)
 
- COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
- COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(in) :: b_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
+ COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
 
- COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
- COMPLEX, INTENT(out) :: rhs_out_v(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:3)
+ COMPLEX, INTENT(out) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
+ COMPLEX, INTENT(out) :: rhs_out_v(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
 
 !  COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
 !  COMPLEX, INTENT(out) :: rhs_out(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2)
