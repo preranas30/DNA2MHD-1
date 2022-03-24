@@ -503,11 +503,33 @@ SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
   IF(np_kz.ne.1) STOP "get_rhs_nl1 only suitable for np_kz=1"
   ALLOCATE(temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1))
   ALLOCATE(temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1))
+
+  ALLOCATE(b(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(v(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+
+  ALLOCATE(dxv(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dyv(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dzv(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dxb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dyb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dzb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+
+
+  ALLOCATE(dxdyb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dydyb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dzdyb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dxdzb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dydzb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ALLOCATE(dzdzb(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+
   ALLOCATE(dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1))
   ALLOCATE(dyphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1))
   ALLOCATE(dxg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1))
   ALLOCATE(dyg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1))
-  ALLOCATE(g_in0(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
+  
+  !ALLOCATE(g_in0(0:nkx0-1,0:nky0-1,lkz1:lkz2,lv1:lv2,lh1:lh2,ls1:ls2))
+  ALLOCATE(b_in0(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
+  ALLOCATE(v_in0(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
 
 ! Some test for the inverse hankel transform
 !  IF (mype==0) THEN
@@ -564,35 +586,94 @@ SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
 !  ENDIF
  
   ! I dont want to change g_in, so I copy temporaly to g_in0
-  g_in0 = g_in
-  IF (hankel) THEN
-  !First I need the Hankel transform of g_in
-  call hankel_transform(g_in0,.true.)    
-  ENDIF
+  !g_in0 = g_in
+  b_in0 = b_in
+  v_in0 = v_in
+
+  !IF (hankel) THEN
+  !!First I need the Hankel transform of g_in
+  !call hankel_transform(g_in0,.true.)    
+  !ENDIF
  
  ! Now a loop versus the hankel index
  !This check for hankel, but for v_on should work with lh1:lh2
-  DO h=lh1,lh2
+  !DO h=lh1,lh2
     !IF(mype==0.and.first_stage) WRITE(*,*) "mype,itime,rhs_lin",mype,itime,abs(sum(sum(sum(sum(rhs_out,1),1),1),1))
-     DO k=0,nkz0-1
-        phi_in(:,:,k)=J0a(:,:)*J0_fac(:,:,h)*phi_in0(:,:,k)
-    END DO
+   !  DO k=0,nkz0-1
+   !     phi_in(:,:,k)=J0a(:,:)*J0_fac(:,:,h)*phi_in0(:,:,k)
+   ! END DO
 
     !dx phi
+    ! b
     DO i=0,nkx0-1
-        temp_small(i,:,:)=i_complex*kxgrid(i)*phi_in(i,:,:)
+        !temp_small(i,:,:)=i_complex*kxgrid(i)*phi_in(i,:,:)
+        temp_small(i,:,:)=b_in0(i,:,:,:)
     END DO
 
     !Add padding for dealiasing
     temp_big=cmplx(0.0,0.0)
     DO i=0,nkx0-1
-        temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind)    !kz positive, ky positive    
-        temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1) !kz negative, ky positive
-        temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1) !kz negative, ky negative
-        temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind) !kz positive, ky negative
+        temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind,:)    !kz positive, ky positive    
+        temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1,:) !kz negative, ky positive
+        temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1,:) !kz negative, ky negative
+        temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind,:) !kz positive, ky negative
     END DO!k loop
   
-    CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dxphi(0,0,0))
+    CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),b(0,0,0))
+
+    ! dxv
+    DO i=0,nkx0-1
+        temp_small(i,:,:)=i_complex*kxgrid(i)*v_in(i,:,:)
+    END DO
+
+    !Add padding for dealiasing
+    temp_big=cmplx(0.0,0.0)
+    DO i=0,nkx0-1
+        temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind,:)    !kz positive, ky positive    
+        temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1,:) !kz negative, ky positive
+        temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1,:) !kz negative, ky negative
+        temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind,:) !kz positive, ky negative
+    END DO!k loop
+  
+    CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dxv(0,0,0))
+
+    ! dyv
+    DO j=0,nky0-1
+        temp_small(:,j,:)=i_complex*kygrid(j)*v_in(:,j,:)
+    END DO
+
+    !Add padding for dealiasing
+    temp_big=cmplx(0.0,0.0)
+    DO i=0,nkx0-1
+        temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind,:)    !kz positive, ky positive    
+        temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1,:) !kz negative, ky positive
+        temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1,:) !kz negative, ky negative
+        temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind,:) !kz positive, ky negative
+    END DO!k loop
+  
+    CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dyv(0,0,0))
+
+    ! dzv
+    DO k=0,nky0-1
+        temp_small(:,:,k)=i_complex*kzgrid(k)*v_in(:,:,k)
+    END DO
+
+    !Add padding for dealiasing
+    temp_big=cmplx(0.0,0.0)
+    DO i=0,nkx0-1
+        temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind,:)    !kz positive, ky positive    
+        temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1,:) !kz negative, ky positive
+        temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1,:) !kz negative, ky negative
+        temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind,:) !kz positive, ky negative
+    END DO!k loop
+  
+    CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dzv(0,0,0))
+
+
+
+
+
+
 
     IF(first_stage) ve_max(1)=maxval(abs(dxphi)) 
 
@@ -662,7 +743,7 @@ SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
         END DO!i loop
 
     END DO !v loop
-  END DO ! h loop
+  !END DO ! h loop
   
   ! The results should be hankel transformed back
 ! IF (hk_on) THEN 
