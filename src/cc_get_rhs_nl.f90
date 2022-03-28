@@ -38,18 +38,19 @@ MODULE nonlinearity
 
   !COMPLEX :: temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1)
   !COMPLEX :: temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dyphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dxg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dyg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  COMPLEX, ALLOCATABLE, DIMENSION(:,:,:,:,:,:) :: g_in0
+                                                              !REAL :: dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                              !REAL :: dyphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                              !REAL :: dxg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                              !REAL :: dyg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+  COMPLEX, ALLOCATABLE, DIMENSION(:,:,:) :: b
+  COMPLEX, ALLOCATABLE, DIMENSION(:,:,:) :: v
   COMPLEX, ALLOCATABLE, DIMENSION(:,:,:) :: temp_small,temp_big
-  REAL, ALLOCATABLE, DIMENSION(:,:,:) :: dxphi,dyphi,dxg,dyg
-  COMPLEX, ALLOCATABLE, DIMENSION(:,:) :: temp_small_2d,temp_big_2d
-  REAL, ALLOCATABLE, DIMENSION(:,:) :: dxphi_2d,dyphi_2d,dxg_2d,dyg_2d
- 
-
-  !For fft's
+  REAL, ALLOCATABLE, DIMENSION(:,:,:) :: dxv,dyv,dzv, dxb,dyb,dzb, dxdyb, dydyb,dzdyb, dxdzb,ddydzb,dzdzb
+  
+                                                        ! REAL, ALLOCATABLE, DIMENSION(:,:,:) :: dxphi,dyphi,dxg,dyg
+                                                        ! COMPLEX, ALLOCATABLE, DIMENSION(:,:) :: temp_small_2d,temp_big_2d
+                                                      !REAL, ALLOCATABLE, DIMENSION(:,:) :: dxphi_2d,dyphi_2d,dxg_2d,dyg_2d
+   !For fft's
 
   COMPLEX, ALLOCATABLE, DIMENSION(:,:,:):: g_kbig
   REAL, ALLOCATABLE, DIMENSION(:,:,:):: g_rbig
@@ -126,36 +127,7 @@ END SUBROUTINE initialize_fourier_ae_mu0
 !Note: only for adiabatic electrons (ae) and mu-integrated (mu0) version
 SUBROUTINE initialize_fourier_ae_mu0_2d
 
-  include 'fftw3.f'
-  
-  !for dealiasing
-  nx0_big=3*nkx0
-  ny0_big=3*nky0/2
-  fft_norm=1.0/(REAL(nx0_big*ny0_big))
-
-  ALLOCATE(g_rbig_2d(0:nx0_big-1,0:ny0_big-1))
-  ALLOCATE(g_kbig_2d(0:nx0_big/2,0:ny0_big-1))
-
-  !WRITE(*,*) "making plans"
-  CALL dfftw_plan_dft_c2r_2d(plan_c2r,nx0_big,ny0_big,nz0_big,&
-                             g_kbig_2d,g_rbig_2d,FFTW_ESTIMATE)
-  CALL dfftw_plan_dft_r2c_2d(plan_r2c,nx0_big,ny0_big,nz0_big,&
-                             g_rbig_2d,g_kbig_2d,FFTW_ESTIMATE)
-  
-  DEALLOCATE(g_rbig_2d)
-  DEALLOCATE(g_kbig_2d)
-
-  lky_big=ny0_big-hky_ind !Index of minimum (most negative) FILLED ky value for big arrays
-
-  IF(mype==0) WRITE(*,*) "Initializing FFT"
-  IF(mype==0) WRITE(*,*) "nkx0,nky0,nkz0",nkx0,nky0,nkz0
-  IF(mype==0) WRITE(*,*) "nx0_big,ny0_big",nx0_big,ny0_big
-  IF(mype==0) WRITE(*,*) "hky_ind,lky_ind",hky_ind,lky_ind
-  IF(mype==0) WRITE(*,*) "lky_big",lky_big
-
-  !CALL dfftw_execute_dft_c2r(plan_c2r,tcomp(0,0,0),treal(0,0,0))
-  !CALL dfftw_execute_dft_r2c(plan_r2c,treal(0,0,0),tcomp(0,0,0))
-  !tcomp=tcomp/REAL(n1*n2*n3)
+  DELETED NO NEED
 
 END SUBROUTINE initialize_fourier_ae_mu0_2d
 
@@ -166,50 +138,7 @@ END SUBROUTINE initialize_fourier_ae_mu0_2d
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !SUBROUTINE initialize_fourier2
 !
-!  include 'fftw3.f'
-!
-!  COMPLEX, ALLOCATABLE, DIMENSION(:) :: kvec_x,kvec_y,kvec_z 
-!  COMPLEX, ALLOCATABLE, DIMENSION(:) :: rvec_y,rvec_z 
-!  REAL, ALLOCATABLE, DIMENSION(:) :: rvec_x
-!  
-!  IF(mype==0) WRITE(*,*) "Using three 1D ffts."
-!  !for dealiasing
-!  nx0_big=3*nkx0
-!  ny0_big=3*nky0/2
-!  nz0_big=3*nkz0/2
-!  fft_norm=1.0/(REAL(nx0_big*ny0_big*nz0_big))
-!
-!  ALLOCATE(kvec_x(0:nx0_big/2))
-!  ALLOCATE(rvec_x(0:nx0_big-1))
-!  ALLOCATE(kvec_y(0:ny0_big-1))
-!  ALLOCATE(rvec_y(0:ny0_big-1))
-!  ALLOCATE(kvec_z(0:nz0_big-1))
-!  ALLOCATE(rvec_z(0:nz0_big-1))
-!
-!  !WRITE(*,*) "making plans"
-!  CALL dfftw_plan_dft_1d(plan_z2kz,nz0_big,rvec_z,kvec_z,FFTW_FORWARD,FFTW_ESTIMATE)
-!  CALL dfftw_plan_dft_1d(plan_kz2z,nz0_big,kvec_z,rvec_z,FFTW_BACKWARD,FFTW_ESTIMATE)
-!  CALL dfftw_plan_dft_1d(plan_y2ky,ny0_big,rvec_y,kvec_y,FFTW_FORWARD,FFTW_ESTIMATE)
-!  CALL dfftw_plan_dft_1d(plan_ky2y,ny0_big,kvec_y,rvec_y,FFTW_BACKWARD,FFTW_ESTIMATE)
-!
-!  CALL dfftw_plan_dft_r2c_1d(plan_x2kx,nx0_big,rvec_x,kvec_x,FFTW_ESTIMATE)
-!  CALL dfftw_plan_dft_r2c_1d(plan_kx2x,nx0_big,kvec_x,rvec_x,FFTW_ESTIMATE)
-!
-!!  CALL dfftw_plan_dft_c2r_3d(plan_c2r,nx0_big,ny0_big,nz0_big,&
-!!                             g_kbig,g_rbig,FFTW_ESTIMATE)
-!!  CALL dfftw_plan_dft_r2c_3d(plan_r2c,nx0_big,ny0_big,nz0_big,&
-!!                             g_rbig,g_kbig,FFTW_ESTIMATE)
-!
-!  lky_big=ny0_big-hky_ind !Index of minimum (most negative) FILLED ky value for big arrays
-!  lkz_big=nz0_big-hkz_ind !Index of minimum (most negative) FILLED kz value for big arrays 
-!
-!  DEALLOCATE(kvec_x)
-!  DEALLOCATE(rvec_x)
-!  DEALLOCATE(kvec_y)
-!  DEALLOCATE(rvec_y)
-!  DEALLOCATE(kvec_z)
-!  DEALLOCATE(rvec_z)
-!
+!  DELETED NO NEED
 !END SUBROUTINE initialize_fourier2
 
 
@@ -243,235 +172,7 @@ END SUBROUTINE get_rhs_nl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !SUBROUTINE get_rhs_nl2(g_in,phi_in,rhs_out)
 !
-!  USE par_mod
-!  include 'fftw3.f'
-!
-!  COMPLEX, INTENT(in) :: g_in(0:nkx0-1,0:nky0-1,0:nkz0-1,lv1:lv2)
-!  !COMPLEX :: g_temp(0:nkx0-1,0:nky0-1,0:nkz0-1,lv1:lv2)
-!  COMPLEX, INTENT(in) :: phi_in(0:nkx0-1,0:nky0-1,0:nkz0-1)
-!  COMPLEX :: temp3d(0:nkx0-1,0:nky0-1,0:nkz0-1)
-!  COMPLEX, INTENT(inout) :: rhs_out(0:nkx0-1,0:nky0-1,0:nkz0-1,lv1:lv2)
-!  
-!  COMPLEX :: temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1)
-!  COMPLEX :: temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1)
-!  REAL :: dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-!  REAL :: dyphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-!  REAL :: dxg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-!  REAL :: dyg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-!  COMPLEX :: kvec_x(0:nx0_big/2),kvec_y(0:ny0_big-1),kvec_z(0:nz0_big-1) 
-!  COMPLEX :: rvec_y(0:ny0_big-1),rvec_z(0:nz0_big-1) 
-!  REAL :: rvec_x(0:nx0_big-1)
-!  INTEGER :: i,j,k,l
-!
-!!dxphi
-!!dxphi
-!!dxphi
-!  DO i=0,nkx0-1
-!    temp_small(i,:,:)=i_complex*kxgrid(i)*phi_in(i,:,:)
-!  END DO
-!
-!  !Add padding for dealiasing
-!  temp_big=cmplx(0.0,0.0)
-!  DO i=0,nkx0-1
-!    temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind)    !kz positive, ky positive    
-!    temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1) !kz negative, ky positive
-!    temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1) !kz negative, ky negative
-!    temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind) !kz positive, ky negative
-!  END DO!k loop
-!
-!  DO i=0,nx0_big/2
-!    DO j=0,ny0_big-1
-!      kvec_z(:)=temp_big(i,j,:) 
-!      CALL dfftw_execute_dft(plan_kz2z,kvec_z,rvec_z)
-!      temp_big(i,j,:)=rvec_z
-!    END DO
-!  END DO
-!
-!  DO i=0,nx0_big/2
-!    DO k=0,nz0_big-1
-!      kvec_y(:)=temp_big(i,:,k) 
-!      CALL dfftw_execute_dft(plan_ky2y,kvec_y,rvec_y)
-!      temp_big(i,:,k)=rvec_y
-!    END DO
-!  END DO
-!
-!  DO j=0,ny0_big-1
-!    DO k=0,nz0_big-1
-!      kvec_x(:)=temp_big(:,j,k) 
-!      CALL dfftw_execute_dft_c2r(plan_kx2x,kvec_x,rvec_x)
-!      dxphi(:,j,k)=rvec_x
-!      !CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dxphi(0,0,0))
-!    END DO
-!  END DO
-! 
-! 
-!!dyphi
-!!dyphi
-!!dyphi
-!  DO j=0,nky0-1
-!    temp_small(:,j,:)=i_complex*kygrid(j)*phi_in(:,j,:)
-!  END DO
-!
-!  !Add padding for dealiasing
-!  temp_big=cmplx(0.0,0.0)
-!  DO i=0,nkx0-1
-!    temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind)    !kz positive, ky positive    
-!    temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1) !kz negative, ky positive
-!    temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1) !kz negative, ky negative
-!    temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind) !kz positive, ky negative
-!  END DO!k loop
-!
-!  DO i=0,nx0_big/2
-!    DO j=0,ny0_big-1
-!      kvec_z(:)=temp_big(i,j,:) 
-!      CALL dfftw_execute_dft(plan_kz2z,kvec_z,rvec_z)
-!      temp_big(i,j,:)=rvec_z
-!    END DO
-!  END DO
-!
-!  DO i=0,nx0_big/2
-!    DO k=0,nz0_big-1
-!      kvec_y(:)=temp_big(i,:,k) 
-!      CALL dfftw_execute_dft(plan_ky2y,kvec_y,rvec_y)
-!      temp_big(i,:,k)=rvec_y
-!    END DO
-!  END DO
-!
-!  DO j=0,ny0_big-1
-!    DO k=0,nz0_big-1
-!      kvec_x(:)=temp_big(:,j,k) 
-!      CALL dfftw_execute_dft_c2r(plan_kx2x,kvec_x,rvec_x)
-!      dyphi(:,j,k)=rvec_x
-!      !CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dxphi(0,0,0))
-!    END DO
-!  END DO
-!  
-!  DO l=lv1,lv2
-!
-!
-!  !dxg
-!  !dxg
-!  !dxg
-!    DO i=0,nkx0-1
-!      temp_small(i,:,:)=i_complex*kxgrid(i)*g_in(i,:,:,l)
-!    END DO
-!  
-!    !Add padding for dealiasing
-!    temp_big=cmplx(0.0,0.0)
-!    DO i=0,nkx0-1
-!      temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind)    !kz positive, ky positive    
-!      temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1) !kz negative, ky positive
-!      temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1) !kz negative, ky negative
-!      temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind) !kz positive, ky negative
-!    END DO!k loop
-!    
-!    DO i=0,nx0_big/2
-!      DO j=0,ny0_big-1
-!        kvec_z(:)=temp_big(i,j,:) 
-!        CALL dfftw_execute_dft(plan_kz2z,kvec_z,rvec_z)
-!        temp_big(i,j,:)=rvec_z
-!      END DO
-!    END DO
-!  
-!    DO i=0,nx0_big/2
-!      DO k=0,nz0_big-1
-!        kvec_y(:)=temp_big(i,:,k) 
-!        CALL dfftw_execute_dft(plan_ky2y,kvec_y,rvec_y)
-!        temp_big(i,:,k)=rvec_y
-!      END DO
-!    END DO
-!  
-!    DO j=0,ny0_big-1
-!      DO k=0,nz0_big-1
-!        kvec_x(:)=temp_big(:,j,k) 
-!        CALL dfftw_execute_dft_c2r(plan_kx2x,kvec_x,rvec_x)
-!        dxg(:,j,k)=rvec_x
-!        !CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dxphi(0,0,0))
-!      END DO
-!    END DO
-!   
-!   
-!  !dyg
-!  !dyg
-!  !dyg
-!    DO j=0,nky0-1
-!      temp_small(:,j,:)=i_complex*kygrid(j)*g_in(:,j,:,l)
-!    END DO
-!  
-!    !Add padding for dealiasing
-!    temp_big=cmplx(0.0,0.0)
-!    DO i=0,nkx0-1
-!      temp_big(i,0:hky_ind,0:hkz_ind)=temp_small(i,0:hky_ind,0:hkz_ind)    !kz positive, ky positive    
-!      temp_big(i,0:hky_ind,lkz_big:nz0_big-1)=temp_small(i,0:hky_ind,lkz_ind:nkz0-1) !kz negative, ky positive
-!      temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)=temp_small(i,lky_ind:nky0-1,lkz_ind:nkz0-1) !kz negative, ky negative
-!      temp_big(i,lky_big:ny0_big-1,0:hkz_ind)=temp_small(i,lky_ind:nky0-1,0:hkz_ind) !kz positive, ky negative
-!    END DO!k loop
-!  
-!    DO i=0,nx0_big/2
-!      DO j=0,ny0_big-1
-!        kvec_z(:)=temp_big(i,j,:) 
-!        CALL dfftw_execute_dft(plan_kz2z,kvec_z,rvec_z)
-!        temp_big(i,j,:)=rvec_z
-!      END DO
-!    END DO
-!  
-!    DO i=0,nx0_big/2
-!      DO k=0,nz0_big-1
-!        kvec_y(:)=temp_big(i,:,k) 
-!        CALL dfftw_execute_dft(plan_ky2y,kvec_y,rvec_y)
-!        temp_big(i,:,k)=rvec_y
-!      END DO
-!    END DO
-!  
-!    DO j=0,ny0_big-1
-!      DO k=0,nz0_big-1
-!        kvec_x(:)=temp_big(:,j,k) 
-!        CALL dfftw_execute_dft_c2r(plan_kx2x,kvec_x,rvec_x)
-!        dyg(:,j,k)=rvec_x
-!        !CALL dfftw_execute_dft_c2r(plan_c2r,temp_big(0,0,0),dxphi(0,0,0))
-!      END DO
-!    END DO
-!
-!    dxg=dxg*dyphi-dyg*dxphi
-!  
-!    DO j=0,ny0_big-1
-!      DO k=0,nz0_big-1
-!        rvec_x(:)=dxg(:,j,k) 
-!        CALL dfftw_execute_dft_r2c(plan_x2kx,rvec_x,kvec_x)
-!        temp_big(:,j,k)=kvec_x
-!      END DO
-!    END DO
-!
-!    DO i=0,nx0_big/2
-!      DO j=0,ny0_big-1
-!        rvec_z(:)=temp_big(i,j,:) 
-!        CALL dfftw_execute_dft(plan_z2kz,rvec_z,kvec_z)
-!        temp_big(i,j,:)=kvec_z
-!      END DO
-!    END DO
-!  
-!    DO i=0,nx0_big/2
-!      DO k=0,nz0_big-1
-!        rvec_y(:)=temp_big(i,:,k) 
-!        CALL dfftw_execute_dft(plan_y2ky,rvec_y,kvec_y)
-!        temp_big(i,:,k)=kvec_y
-!      END DO
-!    END DO
-!
-!
-!    DO i=0,nkx0-1
-!      rhs_out(i,0:hky_ind,0:hkz_ind,l)=rhs_out(i,0:hky_ind,0:hkz_ind,l)+&           !kz positive, ky positive
-!                                       temp_big(i,0:hky_ind,0:hkz_ind)*fft_norm
-!      rhs_out(i,0:hky_ind,lkz_ind:nkz0-1,l)=rhs_out(i,0:hky_ind,lkz_ind:nkz0-1,l)+& !kz negative, ky positive
-!                                       temp_big(i,0:hky_ind,lkz_big:nz0_big-1)*fft_norm
-!      rhs_out(i,lky_ind:nky0-1,lkz_ind:nkz0-1,l)=rhs_out(i,lky_ind:nky0-1,lkz_ind:nkz0-1,l)+& !kz negative, ky negative
-!                                       temp_big(i,lky_big:ny0_big-1,lkz_big:nz0_big-1)*fft_norm
-!      rhs_out(i,lky_ind:nky0-1,0:hkz_ind,l)=rhs_out(i,lky_ind:nky0-1,0:hkz_ind,l)+& !kz positive, ky negative
-!                                       temp_big(i,lky_big:ny0_big-1,0:hkz_ind)*fft_norm
-!    END DO!i loop
-!
-!
-!  END DO  !lv1,lv2 loop
+!  DELETED NO NEED
 !
 !END SUBROUTINE get_rhs_nl2
 
@@ -488,12 +189,12 @@ SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
   COMPLEX, INTENT(in) :: v_in(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
   COMPLEX, INTENT(inout) :: rhs_out_b(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2)
   COMPLEX, INTENT(inout) :: rhs_out_v(0:nkx0-1,0:nky0-1,0:2)
-  !COMPLEX :: temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1)
-  !COMPLEX :: temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dyphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dxg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
-  !REAL :: dyg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                      !COMPLEX :: temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1)
+                                                      !COMPLEX :: temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1)
+                                                      !REAL :: dxphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                      !REAL :: dyphi(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                      !REAL :: dxg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
+                                                      !REAL :: dyg(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1)
  
   INTEGER :: i,j,l,k,h, ierr
 
@@ -504,8 +205,8 @@ SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
   ALLOCATE(temp_small(0:nkx0-1,0:nky0-1,0:nkz0-1))
   ALLOCATE(temp_big(0:nx0_big/2,0:ny0_big-1,0:nz0_big-1))
 
-  ALLOCATE(b(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
-  ALLOCATE(v(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  !ALLOCATE(b(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
+  ! ALLOCATE(v(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
 
   ALLOCATE(dxv(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
   ALLOCATE(dyv(0:nx0_big-1,0:ny0_big-1,0:nz0_big-1,0:2))
@@ -532,57 +233,7 @@ SUBROUTINE get_rhs_nl1(b_in,v_in,rhs_out_b,rhs_out_v)
   ALLOCATE(v_in0(0:nkx0-1,0:nky0-1,lkz1:lkz2,0:2))
 
 ! Some test for the inverse hankel transform
-!  IF (mype==0) THEN
-!  DO i=0,nkx0-1
-!        DO j=0,nky0-1
-!            DO k=lkz1,lkz2
-!                DO l=lv1,lv2
-!                    Write(*,*) i,j,k,l,g_in0(i,j,k,l,0,0)   
-!                END DO
-!            END DO
-!        END DO
-!    END DO
-!  ENDIF
-!  IF (mype == 0) THEN
-!    OPEN(unit=2090,file=trim(diagdir)//'/hk_init.dat',status='unknown')
-!    OPEN(unit=2091,file=trim(diagdir)//'/v.dat',status='unknown')
-!    OPEN(unit=2092,file=trim(diagdir)//'/hk_fin.dat',status='unknown')
-!  ENDIF 
-!
-!  IF (mype == 0) THEN
-!     DO h=lh1,lh2
-!          WRITE (2090, "(3ES12.4)") hkgrid(h),g_in0(0,25,46,1,h,0)
-!      ENDDO
-!
-!
-!  call hankel_transform_c(g_in0(0,25,46,1,:,0),.true.)    
-!!  IF (mype == 0) THEN
-!     DO h=lh1,lh2
-!          WRITE (2091, "(3ES12.4)") vgrid(h),g_in0(0,25,46,1,h,0)
-!      ENDDO
-!  ENDIF
-!
-!  call hankel_transform_c(g_in0(0,25,46,1,:,0),.false.)    
-!!  IF (mype == 0) THEN
-!     DO h=lh1,lh2
-!          WRITE (2092, "(3ES12.4)") hkgrid(h),g_in0(0,25,46,1,h,0)
-!      ENDDO
-!  ENDIF
-!
-!
-!  call mpi_barrier(mpi_comm_world,ierr)
-!  STOP 
-!
-!  IF (hk_on) THEN
-!    DO i=0,nkx0-1
-!        DO j=0,nky0-1
-!            DO k=lkz1,lkz2
-!                DO l=lv1,lv2
-!                    call hankel_transform_c(g_in0(i,j,k,l,:,0),.true.)    
-!                END DO
-!            END DO
-!        END DO
-!    END DO
+DELETED NO NEED
 !  ENDIF
  
   ! I dont want to change g_in, so I copy temporaly to g_in0
